@@ -1,0 +1,11 @@
+{
+  "name": "inject-loader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "./script/test"
+  },
+  "author": "Justin Morris",
+  "license": "MIT"
+}
