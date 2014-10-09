@@ -1,12 +1,13 @@
 # inject-loader
 
-[![Build Status](https://travis-ci.org/plasticine/inject-loader.svg?branch=master)](https://travis-ci.org/plasticine/inject-loader)
+[![Build Status](https://travis-ci.org/plasticine/inject-loader.svg?branch=master)](https://travis-ci.org/plasticine/inject-loader) [![Dependency Status](https://gemnasium.com/plasticine/inject-loader.svg)](https://gemnasium.com/plasticine/inject-loader)
+
 
 **A [Webpack] loader for injecting code into modules via their dependancies**
 
 This is particularly useful for writing test code where mocking code required inside a module under test is sometimes necessary.
 
-`inject-loader` was inspired by, and builds upon ideas introduced in https://github.com/jauco/webpack-injectable.
+`inject-loader` was inspired by, and builds upon ideas introduced in [jauco/webpack-injectable](https://github.com/jauco/webpack-injectable).
 
 ### Usage
 
