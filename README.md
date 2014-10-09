@@ -40,31 +40,31 @@ You can manipulate it’s dependancies when you come to write tests as follows:
 // all require statements will be wrapped in an injector
 MyModuleInjector = require(inject!MyStore)
 MyModule = MyModuleInjector({
-  'lib/dispatcher’: DispatcherMock,
-  'events’: EventsMock,
-  'lib/handle_action’: HandleActionMock
+  'lib/dispatcher': DispatcherMock,
+  'events': EventsMock,
+  'lib/handle_action': HandleActionMock
 })
 
 // It is also possible to only mock only explicit require
 // statements via passing in their path as a flag
 MyModuleInjector = require('inject?lib/dispatcher!MyStore')
-// only ‘lib/dispatcher’ is wrapped in an injector
+// only 'lib/dispatcher' is wrapped in an injector
 MyModule = MyModuleInjector({'lib/dispatcher’: DispatcherMock})
 
 // this also works for multiple flags & requires
 MyModuleInjector = require('inject?lib/dispatcher&events!MyStore')
-// only ‘lib/dispatcher’ and ‘events’ are wrapped in injectors
+// only 'lib/dispatcher' and 'events' are wrapped in injectors
 MyModule = MyModuleInjector({
-  'lib/dispatcher’: DispatcherMock,
-  'events’: EventsMock
+  'lib/dispatcher': DispatcherMock,
+  'events': EventsMock
 })
 
 // you can also explicitly exclude dependancies from being injected
 MyModuleInjector = require('inject?-lib/dispatcher!MyStore')
 // everything except ‘lib/dispatcher’ is wrapped in an injector
 MyModule = MyModuleInjector({
-  'events’: EventsMock,
-  'lib/handle_action’: HandleActionMock
+  'events': EventsMock,
+  'lib/handle_action': HandleActionMock
 })
 ```
 
