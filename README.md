@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/plasticine/inject-loader.svg?branch=master)](https://travis-ci.org/plasticine/inject-loader) [![Dependency Status](https://gemnasium.com/plasticine/inject-loader.svg)](https://gemnasium.com/plasticine/inject-loader)
 
 
-**A [Webpack] loader for injecting code into modules via their dependancies**
+**A Webpack loader for injecting code into modules via their dependancies**
 
 This is particularly useful for writing test code where mocking code required inside a module under test is sometimes necessary.
 
@@ -20,8 +20,6 @@ By default all `require` statements in an injected module will be altered to be 
 This behaviour can be customised by passing along flags when using the loader to either explicitly include or exclude dependancies from being injected.
 
 ### Examples
-
-##### tl;dr
 
 Given some code in a module like this:
 
