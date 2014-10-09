@@ -23,7 +23,7 @@ This behaviour can be customised by passing along flags when using the loader to
 
 Given some code in a module like this:
 
-``` javascript
+```javascript
 // MyStore.js
 
 var Dispatcher = require('lib/dispatcher');
@@ -35,36 +35,36 @@ Dispatcher.register(handleAction, 'MyStore');
 
 You can manipulate it’s dependencies when you come to write tests as follows:
 
-``` javascript
+```javascript
 // If no flags are provided when using the loader then
 // all require statements will be wrapped in an injector
-MyModuleInjector = require(inject!MyStore)
+MyModuleInjector = require('inject!MyStore')
 MyModule = MyModuleInjector({
-  'lib/dispatcher’: DispatcherMock,
-  'events’: EventsMock,
-  'lib/handle_action’: HandleActionMock
+  'lib/dispatcher': DispatcherMock,
+  'events': EventsMock,
+  'lib/handle_action': HandleActionMock
 })
 
 // It is also possible to only mock only explicit require
 // statements via passing in their path as a flag
-MyModuleInjector = require(inject?lib/dispatcher!MyStore)
-// only ‘lib/dispatcher’ is wrapped in an injector
-MyModule = MyModuleInjector({'lib/dispatcher’: DispatcherMock})
+MyModuleInjector = require('inject?lib/dispatcher!MyStore')
+// only 'lib/dispatcher' is wrapped in an injector
+MyModule = MyModuleInjector({'lib/dispatcher': DispatcherMock})
 
 // this also works for multiple flags & requires
-MyModuleInjector = require(inject?lib/dispatcher&events!MyStore)
-// only ‘lib/dispatcher’ and ‘events’ are wrapped in injectors
+MyModuleInjector = require('inject?lib/dispatcher&events!MyStore')
+// only 'lib/dispatcher' and 'events' are wrapped in injectors
 MyModule = MyModuleInjector({
-  'lib/dispatcher’: DispatcherMock,
-  'events’: EventsMock
+  'lib/dispatcher': DispatcherMock,
+  'events': EventsMock
 })
 
 // you can also explicitly exclude dependencies from being injected
-MyModuleInjector = require(inject?-lib/dispatcher!MyStore)
-// everything except ‘lib/dispatcher’ is wrapped in an injector
+MyModuleInjector = require('inject?-lib/dispatcher!MyStore')
+// everything except 'lib/dispatcher' is wrapped in an injector
 MyModule = MyModuleInjector({
-  'events’: EventsMock,
-  'lib/handle_action’: HandleActionMock
+  'events': EventsMock,
+  'lib/handle_action': HandleActionMock
 })
 ```
 
