@@ -5,7 +5,7 @@
 
 **A Webpack loader for injecting code into modules via their dependencies**
 
-This is particularly useful for writing test code where mocking code required inside a module under test is sometimes necessary.
+This is particularly useful for writing tests where mocking things inside your module-under-test is sometimes necessary before execution.
 
 `inject-loader` was inspired by, and builds upon ideas introduced in [jauco/webpack-injectable](https://github.com/jauco/webpack-injectable).
 
