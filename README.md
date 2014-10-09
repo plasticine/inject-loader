@@ -1,6 +1,6 @@
 # inject-loader
 
-[![Build Status](https://travis-ci.org/plasticine/inject-loader.svg?branch=master)](https://travis-ci.org/plasticine/inject-loader) [![Dependency Status](https://gemnasium.com/plasticine/inject-loader.svg)](https://gemnasium.com/plasticine/inject-loader)
+[![Build Status](https://travis-ci.org/plasticine/inject-loader.svg?branch=master)](https://travis-ci.org/plasticine/inject-loader) [![Dependency Status](https://gemnasium.com/plasticine/inject-loader.svg)](https://gemnasium.com/plasticine/inject-loader) [![NPM version](https://badge.fury.io/js/inject-loader.svg)](http://badge.fury.io/js/inject-loader)
 
 
 **A Webpack loader for injecting code into modules via their dependancies**
