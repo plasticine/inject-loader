@@ -1,12 +1,16 @@
 {
   "name": "inject-loader",
   "version": "1.0.0",
-  "description": "",
+  "description": "A Webpack loader for injecting code into modules via their dependancies",
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers coffee:coffee-script/register"
   },
-  "author": "Justin Morris",
+  "author": "Justin Morris <desk@pixelbloom.com> (http://pixelbloom.com)",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:plasticine/inject-loader.git"
+  },
   "license": "MIT",
   "dependencies": {
     "loader-utils": "^0.2.3"
@@ -16,5 +20,14 @@
     "coffee-script": "^1.8.0",
     "mocha": "^1.21.4",
     "sinon": "^1.10.3"
-  }
+  },
+  "keywords": [
+    "webpack",
+    "testing",
+    "loader",
+    "webpack-loader",
+    "inject",
+    "mock",
+    "mocking"
+  ]
 }
