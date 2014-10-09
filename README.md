@@ -33,7 +33,7 @@ var handleAction = require('lib/handle_action');
 Dispatcher.register(handleAction, 'MyStore');
 ```
 
-You can manipulate it's dependancies when you come to write tests as follows:
+You can manipulate it’s dependancies when you come to write tests as follows:
 
 ```javascript
 // If no flags are provided when using the loader then
