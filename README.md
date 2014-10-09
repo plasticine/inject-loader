@@ -23,7 +23,7 @@ This behaviour can be customised by passing along flags when using the loader to
 
 Given some code in a module like this:
 
-``` javascript
+```javascript
 // MyStore.js
 
 var Dispatcher = require('lib/dispatcher');
@@ -35,7 +35,7 @@ Dispatcher.register(handleAction, 'MyStore');
 
 You can manipulate it’s dependancies when you come to write tests as follows:
 
-``` javascript
+```javascript
 // If no flags are provided when using the loader then
 // all require statements will be wrapped in an injector
 MyModuleInjector = require('inject!MyStore')
