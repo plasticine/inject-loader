@@ -38,7 +38,7 @@ You can manipulate it’s dependancies when you come to write tests as follows:
 ``` javascript
 // If no flags are provided when using the loader then
 // all require statements will be wrapped in an injector
-MyModuleInjector = require(inject!MyStore)
+MyModuleInjector = require('inject!MyStore')
 MyModule = MyModuleInjector({
   'lib/dispatcher': DispatcherMock,
   'events': EventsMock,
@@ -49,7 +49,7 @@ MyModule = MyModuleInjector({
 // statements via passing in their path as a flag
 MyModuleInjector = require('inject?lib/dispatcher!MyStore')
 // only 'lib/dispatcher' is wrapped in an injector
-MyModule = MyModuleInjector({'lib/dispatcher’: DispatcherMock})
+MyModule = MyModuleInjector({'lib/dispatcher': DispatcherMock})
 
 // this also works for multiple flags & requires
 MyModuleInjector = require('inject?lib/dispatcher&events!MyStore')
