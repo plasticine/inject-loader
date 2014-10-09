@@ -4,8 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "./script/test"
+    "test": "mocha --compilers coffee:coffee-script/register"
   },
   "author": "Justin Morris",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "loader-utils": "^0.2.3"
+  },
+  "devDependencies": {
+    "chai": "^1.9.2",
+    "coffee-script": "^1.8.0",
+    "mocha": "^1.21.4",
+    "sinon": "^1.10.3"
+  }
 }
