@@ -27,7 +27,7 @@ describe 'inject-loader', ->
     describe 'injecting', ->
       it 'injects all require statements by default', ->
         src = "require('lib/thing')"
-        replacement = "injections['lib/thing']"
+        replacement = "(injections['lib/thing'] || require('lib/thing'))"
         expect(@fn(src)).to.have.string replacement
 
     describe 'queries', ->
@@ -37,9 +37,9 @@ describe 'inject-loader', ->
 
         it 'injects all modules', ->
           injectedSrc = @fn(moduleFixture)
-          expect(injectedSrc).to.have.string "var Dispatcher = injections['lib/dispatcher'];"
-          expect(injectedSrc).to.have.string "var EventEmitter = injections['events'].EventEmitter;"
-          expect(injectedSrc).to.have.string "var handleAction = injections['lib/handle_action'];"
+          expect(injectedSrc).to.have.string "var Dispatcher = (injections['lib/dispatcher'] || require('lib/dispatcher'));"
+          expect(injectedSrc).to.have.string "var EventEmitter = (injections['events'] || require('events')).EventEmitter;"
+          expect(injectedSrc).to.have.string "var handleAction = (injections['lib/handle_action'] || require('lib/handle_action'));"
 
       describe 'single specific injection', ->
         beforeEach ->
@@ -47,7 +47,7 @@ describe 'inject-loader', ->
 
         it 'only injects the module from the query', ->
           injectedSrc = @fn(moduleFixture)
-          expect(injectedSrc).to.have.string "var Dispatcher = injections['lib/dispatcher'];"
+          expect(injectedSrc).to.have.string "var Dispatcher = (injections['lib/dispatcher'] || require('lib/dispatcher'));"
           expect(injectedSrc).to.have.string "var EventEmitter = require('events').EventEmitter;"
           expect(injectedSrc).to.have.string "var handleAction = require('lib/handle_action');"
 
@@ -57,8 +57,8 @@ describe 'inject-loader', ->
 
         it 'injects all modules from the query', ->
           injectedSrc = @fn(moduleFixture)
-          expect(injectedSrc).to.have.string "var Dispatcher = injections['lib/dispatcher'];"
-          expect(injectedSrc).to.have.string "var EventEmitter = injections['events'].EventEmitter;"
+          expect(injectedSrc).to.have.string "var Dispatcher = (injections['lib/dispatcher'] || require('lib/dispatcher'));"
+          expect(injectedSrc).to.have.string "var EventEmitter = (injections['events'] || require('events')).EventEmitter;"
           expect(injectedSrc).to.have.string "var handleAction = require('lib/handle_action');"
 
       describe 'exculde single specific injection', ->
@@ -69,8 +69,8 @@ describe 'inject-loader', ->
           it 'injects all modules except the one from the query', ->
             injectedSrc = @fn(moduleFixture)
             expect(injectedSrc).to.have.string "var Dispatcher = require('lib/dispatcher');"
-            expect(injectedSrc).to.have.string "var EventEmitter = injections['events'].EventEmitter;"
-            expect(injectedSrc).to.have.string "var handleAction = injections['lib/handle_action'];"
+            expect(injectedSrc).to.have.string "var EventEmitter = (injections['events'] || require('events')).EventEmitter;"
+            expect(injectedSrc).to.have.string "var handleAction = (injections['lib/handle_action'] || require('lib/handle_action'));"
 
         describe 'exculde multiple specific injections', ->
           beforeEach ->
@@ -80,4 +80,4 @@ describe 'inject-loader', ->
             injectedSrc = @fn(moduleFixture)
             expect(injectedSrc).to.have.string "var Dispatcher = require('lib/dispatcher');"
             expect(injectedSrc).to.have.string "var EventEmitter = require('events').EventEmitter;"
-            expect(injectedSrc).to.have.string "var handleAction = injections['lib/handle_action'];"
+            expect(injectedSrc).to.have.string "var handleAction = (injections['lib/handle_action'] || require('lib/handle_action'));"
