@@ -4,8 +4,8 @@
   "description": "A Webpack loader for injecting code into modules via their dependancies",
   "main": "index.js",
   "scripts": {
-    "test": "npm run lint *.js && karma start",
-    "lint": "eslint"
+    "test": "karma start",
+    "lint": "eslint src"
   },
   "author": "Justin Morris <desk@pixelbloom.com> (http://pixelbloom.com)",
   "repository": {
@@ -23,7 +23,9 @@
     "babel-loader": "^5.1.2",
     "eslint": "^0.21.2",
     "karma": "^0.12.32",
+    "karma-chrome-launcher": "^0.1.12",
     "karma-cli": "0.0.4",
+    "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.1.10",
     "karma-mocha-reporter": "^1.0.2",
     "karma-sinon-chai": "^0.3.0",
