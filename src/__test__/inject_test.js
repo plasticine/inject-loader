@@ -8,6 +8,16 @@ const commonjsModuleFixture = `
   Dispatcher.register(handleAction, 'MyStore');
 `;
 
+function makeStubbedInjectorFn(src) {
+  return Function(`
+    return function wrappedInjectorFn(requireStub, injections) {
+      var require = requireStub;
+      var module = {};
+      ${src}(injections);
+    }
+  `)();
+}
+
 describe('inject-loader', function() {
   before(() => {
     this.context = {
@@ -29,12 +39,20 @@ describe('inject-loader', function() {
   describe('injecting code into a module via its dependencies', () => {
     it('injects all dependencies by default', () => {
       const src = `require('lib/thing')`;
-      const replacement = `(injections['lib/thing'] || require('lib/thing'))`;
+      const replacement = `(__injections__['lib/thing'] || require('lib/thing'))`;
       chai.expect(this.injectLoaderFn(src)).to.have.string(replacement);
     });
 
     xit('falls back to the original dependency when a replacement is not provided', () => {
       return;
+    });
+
+    xit('throws an error if not provided with any injections', () => {
+      return;
+    });
+
+    it('allows code to be injected into the module via the injector function', () => {
+      const moduleInjectorFn = this.injectLoaderFn(commonjsModuleFixture);
     });
 
     describe('controlling injection targets via loader query', () => {
@@ -43,11 +61,18 @@ describe('inject-loader', function() {
           this.context.query = null;
         });
 
-        it('injects all modules', () => {
-          const injectedSrc = this.injectLoaderFn(commonjsModuleFixture);
-          chai.expect(injectedSrc).to.have.string(`var Dispatcher = (injections['lib/dispatcher'] || require('lib/dispatcher'));`);
-          chai.expect(injectedSrc).to.have.string(`var EventEmitter = (injections['events'] || require('events')).EventEmitter;`);
-          chai.expect(injectedSrc).to.have.string(`var handleAction = (injections['lib/handle_action'] || require('lib/handle_action'));`);
+        it('provides an injector for all module dependencies', () => {
+          const moduleInjectorFn = this.injectLoaderFn(commonjsModuleFixture);
+          chai.expect(moduleInjectorFn).to.have.string(`var Dispatcher = (__injections__['lib/dispatcher'] || require('lib/dispatcher'));`);
+          chai.expect(moduleInjectorFn).to.have.string(`var EventEmitter = (__injections__['events'] || require('events')).EventEmitter;`);
+          chai.expect(moduleInjectorFn).to.have.string(`var handleAction = (__injections__['lib/handle_action'] || require('lib/handle_action'));`);
+
+          // const requireStub = sinon.stub();
+          // requireStub.withArgs('lib/dispatcher').returns(sinon.stub({register: () => true}))
+          // requireStub.withArgs('events').returns(sinon.stub({EventEmitter: () => true}))
+          // requireStub.withArgs('lib/handle_action').returns(sinon.stub())
+          // makeStubbedInjectorFn(moduleInjectorFn)(requireStub);
+          // sinon.assert.calledThrice(requireStub);
         });
       });
 
@@ -57,10 +82,10 @@ describe('inject-loader', function() {
         });
 
         it('only injects the specified dependency', () => {
-          const injectedSrc = this.injectLoaderFn(commonjsModuleFixture);
-          chai.expect(injectedSrc).to.have.string(`var Dispatcher = (injections['lib/dispatcher'] || require('lib/dispatcher'));`);
-          chai.expect(injectedSrc).to.have.string(`var EventEmitter = require('events').EventEmitter;`);
-          chai.expect(injectedSrc).to.have.string(`var handleAction = require('lib/handle_action');`);
+          const moduleInjectorFn = this.injectLoaderFn(commonjsModuleFixture);
+          chai.expect(moduleInjectorFn).to.have.string(`var Dispatcher = (__injections__['lib/dispatcher'] || require('lib/dispatcher'));`);
+          chai.expect(moduleInjectorFn).to.have.string(`var EventEmitter = require('events').EventEmitter;`);
+          chai.expect(moduleInjectorFn).to.have.string(`var handleAction = require('lib/handle_action');`);
         });
 
         xit('throws an error if the specified dependency is not valid', () => {
@@ -74,10 +99,10 @@ describe('inject-loader', function() {
         });
 
         it('injects all modules from the query', () => {
-          const injectedSrc = this.injectLoaderFn(commonjsModuleFixture);
-          chai.expect(injectedSrc).to.have.string(`var Dispatcher = (injections['lib/dispatcher'] || require('lib/dispatcher'));`);
-          chai.expect(injectedSrc).to.have.string(`var EventEmitter = (injections['events'] || require('events')).EventEmitter;`);
-          chai.expect(injectedSrc).to.have.string(`var handleAction = require('lib/handle_action');`);
+          const moduleInjectorFn = this.injectLoaderFn(commonjsModuleFixture);
+          chai.expect(moduleInjectorFn).to.have.string(`var Dispatcher = (__injections__['lib/dispatcher'] || require('lib/dispatcher'));`);
+          chai.expect(moduleInjectorFn).to.have.string(`var EventEmitter = (__injections__['events'] || require('events')).EventEmitter;`);
+          chai.expect(moduleInjectorFn).to.have.string(`var handleAction = require('lib/handle_action');`);
         });
 
         xit('throws an error if any of the specified dependencies are not valid', () => {
@@ -91,10 +116,10 @@ describe('inject-loader', function() {
         });
 
         it('injects all modules except the one from the query', () => {
-          const injectedSrc = this.injectLoaderFn(commonjsModuleFixture);
-          chai.expect(injectedSrc).to.have.string(`var Dispatcher = require('lib/dispatcher');`);
-          chai.expect(injectedSrc).to.have.string(`var EventEmitter = (injections['events'] || require('events')).EventEmitter;`);
-          chai.expect(injectedSrc).to.have.string(`var handleAction = (injections['lib/handle_action'] || require('lib/handle_action'));`);
+          const moduleInjectorFn = this.injectLoaderFn(commonjsModuleFixture);
+          chai.expect(moduleInjectorFn).to.have.string(`var Dispatcher = require('lib/dispatcher');`);
+          chai.expect(moduleInjectorFn).to.have.string(`var EventEmitter = (__injections__['events'] || require('events')).EventEmitter;`);
+          chai.expect(moduleInjectorFn).to.have.string(`var handleAction = (__injections__['lib/handle_action'] || require('lib/handle_action'));`);
         });
 
         xit('throws an error if the specified dependency exclusion is not valid', () => {
@@ -108,10 +133,10 @@ describe('inject-loader', function() {
         });
 
         it('injects all modules except the ones from the query', () => {
-          const injectedSrc = this.injectLoaderFn(commonjsModuleFixture);
-          chai.expect(injectedSrc).to.have.string(`var Dispatcher = require('lib/dispatcher');`);
-          chai.expect(injectedSrc).to.have.string(`var EventEmitter = require('events').EventEmitter;`);
-          chai.expect(injectedSrc).to.have.string(`var handleAction = (injections['lib/handle_action'] || require('lib/handle_action'));`);
+          const moduleInjectorFn = this.injectLoaderFn(commonjsModuleFixture);
+          chai.expect(moduleInjectorFn).to.have.string(`var Dispatcher = require('lib/dispatcher');`);
+          chai.expect(moduleInjectorFn).to.have.string(`var EventEmitter = require('events').EventEmitter;`);
+          chai.expect(moduleInjectorFn).to.have.string(`var handleAction = (__injections__['lib/handle_action'] || require('lib/handle_action'));`);
         });
 
         xit('throws an error if any of the specified dependeny exclusions are not valid', () => {
