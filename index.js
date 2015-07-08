@@ -51,6 +51,7 @@ module.exports = function inject(src) {
   return [
     'module.exports = function inject(injections) {',
     'var module = {exports: {}};',
+    'var exports = module.exports;',
     src.replace(regex, "(injections[$1] || $&)"),
     'return module.exports;',
     '}'
