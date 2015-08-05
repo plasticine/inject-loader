@@ -1,0 +1,36 @@
+{
+  "parser": "babel-eslint",
+  "ecmaFeatures": {
+    "ecmascript": 6,
+    "modules": true
+  },
+  "ext": [".js"],
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  },
+  "rules": {
+    "camelcase": 2,
+    "eol-last": 2,
+    "new-cap": [2],
+    "complexity": [1, 2],
+    "no-mixed-requires": [0],
+    "no-underscore-dangle": [0],
+    "no-warning-comments": [2],
+    "no-var": 2,
+    "quotes": [2, "single"],
+    "space-before-function-parentheses": [2, "never"],
+    "strict": [2, "global"]
+  },
+  "globals": {
+    "describe": true,
+    "xdescribe": true,
+    "it": true,
+    "xit": true,
+    "before": true,
+    "beforeEach": true,
+    "sinon": true,
+    "chai": true
+  }
+}

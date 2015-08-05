@@ -4,7 +4,8 @@
   "description": "A Webpack loader for injecting code into modules via their dependancies",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers coffee:coffee-script/register"
+    "test": "mocha --compilers js:babel/register",
+    "lint": "eslint src"
   },
   "author": "Justin Morris <desk@pixelbloom.com> (http://pixelbloom.com)",
   "repository": {
@@ -16,8 +17,10 @@
     "loader-utils": "^0.2.3"
   },
   "devDependencies": {
+    "babel": "^5.8.20",
+    "babel-eslint": "^4.0.5",
     "chai": "^1.9.2",
-    "coffee-script": "^1.8.0",
+    "eslint": "^0.21.2",
     "mocha": "^1.21.4",
     "sinon": "^1.10.3"
   },
