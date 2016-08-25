@@ -52,7 +52,7 @@ module.exports = function inject(src) {
     'module.exports = function inject(injections) {',
     'var module = {exports: {}};',
     'var exports = module.exports;',
-    src.replace(regex, "(injections[$1] || $&)"),
+    src.replace(regex, "(injections.hasOwnProperty($1) ? injections[$1] : $&)"),
     'return module.exports;',
     '}'
   ].join("\n");
