@@ -9,6 +9,10 @@
     "test": "mocha --compilers coffee:coffee-script/register",
     "prepublish": "npm run build"
   },
+  "files": [
+    "*.md",
+    "lib",
+  ],
   "author": "Justin Morris <desk@pixelbloom.com> (http://pixelbloom.com)",
   "repository": {
     "type": "git",
@@ -16,7 +20,6 @@
   },
   "license": "MIT",
   "dependencies": {
-    "invariant": "^2.2.1",
     "loader-utils": "^0.2.3"
   },
   "devDependencies": {
