@@ -15,7 +15,8 @@ source = """
 
 describe 'inject-loader', ->
   before ->
-    @context = cacheable: -> return
+    @context =
+      cacheable: -> return
     @injectFn = inject.bind(@context)
 
   beforeEach ->
@@ -23,7 +24,7 @@ describe 'inject-loader', ->
 
   it 'is cacheable', ->
     @contextMock.expects('cacheable').once()
-    @injectFn('')
+    @injectFn('require("foo")')
     @contextMock.verify()
 
   describe 'loader', ->
@@ -48,6 +49,16 @@ describe 'inject-loader', ->
         injectWrapper({'someModule': someModuleStub})
         sinon.assert.calledOnce(someModuleStub)
         sinon.assert.calledWithExactly(someModuleStub, 'foobar')
+
+      it '...', ->
+        consoleWarnStub = sinon.stub(console, 'warn');
+        @context.resourcePath = 'my/sillyModule.js'
+        src = "var sillyCode = true;"
+        someModuleStub = sinon.stub()
+        eval(@injectFn(src))
+        sinon.assert.calledOnce(consoleWarnStub)
+        sinon.assert.calledWithExactly(consoleWarnStub, 'Inject Loader: The module you are trying to inject into (`my/sillyModule.js`) does not seem to have any dependencies, are you sure you want to do this?')
+        consoleWarnStub.restore()
 
       it 'throws an error if the user tries to specify an injection that doesnt exist', ->
         src = "require('someModule')('foobar');"

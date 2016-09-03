@@ -53,15 +53,18 @@ function getAllModuleDependencies(source, pattern) {
   return dependencies.map(x => x[1]).map(unescapeQuote);
 }
 
-function createInjectorFunction(source, query = '') {
+function createInjectorFunction({query, resourcePath}, source) {
   const requireStringRegex = createRequireStringRegex(loaderUtils.parseQuery(query));
   const wrappedModuleDependencies = getAllModuleDependencies(source, requireStringRegex);
   const dependencyInjectionTemplate = source.replace(requireStringRegex, '__injectRequire($1)');
 
-  function injectWrapper(__injections = {}, __options = {}) {
+  if (wrappedModuleDependencies.length === 0)
+    console.warn(`Inject Loader: The module you are trying to inject into (\`${resourcePath}\`) does not seem to have any dependencies, are you sure you want to do this?`);
+
+  function injectWrapper(__injections = {}) {
     const __wrappedModuleDependencies = __WRAPPED_MODULE_DEPENDENCIES__;
 
-    function __validateInjections() {
+    (function __validateInjection() {
       const injectionKeys = Object.keys(__injections);
       const invalidInjectionKeys = injectionKeys.filter(x => __wrappedModuleDependencies.indexOf(x) === -1)
       if (invalidInjectionKeys.length > 0)
@@ -71,8 +74,7 @@ function createInjectorFunction(source, query = '') {
 - The following injections were passed in:     ${JSON.stringify(injectionKeys)}
 - The following injections are invalid:        ${JSON.stringify(invalidInjectionKeys)}
 `)
-    }
-    __validateInjections();
+    })()
 
     const module = {exports: {}};
     const exports = module.exports;
@@ -87,6 +89,7 @@ function createInjectorFunction(source, query = '') {
     return module.exports;
   }
 
+  // lol.
   return injectWrapper
     .toString()
     .replace(new RegExp(/__INJECTIONS__;/), dependencyInjectionTemplate)
@@ -95,5 +98,5 @@ function createInjectorFunction(source, query = '') {
 
 export default function inject(source) {
   this.cacheable && this.cacheable();
-  return createInjectorFunction(source, this.query);
+  return createInjectorFunction(this, source);
 }
