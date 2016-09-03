@@ -1,11 +1,14 @@
-inject = require('../index')
+inject = require('../lib').default
 sinon = require('sinon')
 expect = require('chai').expect
 
-moduleFixture = """
+fixture = """
   var Dispatcher = require('lib/dispatcher');
   var EventEmitter = require('events').EventEmitter;
-  var handleAction = require('lib/handle_action');
+  const emitter = new EventEmitter();
+
+  if (something)
+    var handleAction = require('lib/handle_action');
 
   Dispatcher.register(handleAction, 'MyStore');
 """
@@ -13,14 +16,14 @@ moduleFixture = """
 describe 'inject-loader', ->
   before ->
     @context = cacheable: -> return
-    @fn = inject.bind(@context)
+    @injectFn = inject.bind(@context)
 
   beforeEach ->
     @contextMock = sinon.mock(@context)
 
   it 'is cacheable', ->
     @contextMock.expects('cacheable').once()
-    @fn('')
+    @injectFn('')
     @contextMock.verify()
 
   describe 'loader', ->
@@ -28,7 +31,7 @@ describe 'inject-loader', ->
       it 'injects all require statements by default', ->
         src = "require('lib/thing')"
         replacement = "(injections.hasOwnProperty('lib/thing') ? injections['lib/thing'] : require('lib/thing'))"
-        expect(@fn(src)).to.have.string replacement
+        expect(@injectFn(src)).to.have.string replacement
 
     describe 'queries', ->
       describe 'empty', ->
@@ -36,7 +39,7 @@ describe 'inject-loader', ->
           @context.query = null
 
         it 'injects all modules', ->
-          injectedSrc = @fn(moduleFixture)
+          injectedSrc = @injectFn(fixture)
           expect(injectedSrc).to.have.string "var Dispatcher = (injections.hasOwnProperty('lib/dispatcher') ? injections['lib/dispatcher'] : require('lib/dispatcher'));"
           expect(injectedSrc).to.have.string "var EventEmitter = (injections.hasOwnProperty('events') ? injections['events'] : require('events')).EventEmitter;"
           expect(injectedSrc).to.have.string "var handleAction = (injections.hasOwnProperty('lib/handle_action') ? injections['lib/handle_action'] : require('lib/handle_action'));"
@@ -46,7 +49,7 @@ describe 'inject-loader', ->
           @context.query = '?lib/dispatcher'
 
         it 'only injects the module from the query', ->
-          injectedSrc = @fn(moduleFixture)
+          injectedSrc = @injectFn(fixture)
           expect(injectedSrc).to.have.string "var Dispatcher = (injections.hasOwnProperty('lib/dispatcher') ? injections['lib/dispatcher'] : require('lib/dispatcher'));"
           expect(injectedSrc).to.have.string "var EventEmitter = require('events').EventEmitter;"
           expect(injectedSrc).to.have.string "var handleAction = require('lib/handle_action');"
@@ -56,7 +59,7 @@ describe 'inject-loader', ->
           @context.query = '?lib/dispatcher&events'
 
         it 'injects all modules from the query', ->
-          injectedSrc = @fn(moduleFixture)
+          injectedSrc = @injectFn(fixture)
           expect(injectedSrc).to.have.string "var Dispatcher = (injections.hasOwnProperty('lib/dispatcher') ? injections['lib/dispatcher'] : require('lib/dispatcher'));"
           expect(injectedSrc).to.have.string "var EventEmitter = (injections.hasOwnProperty('events') ? injections['events'] : require('events')).EventEmitter;"
           expect(injectedSrc).to.have.string "var handleAction = require('lib/handle_action');"
@@ -67,7 +70,7 @@ describe 'inject-loader', ->
             @context.query = '?-lib/dispatcher'
 
           it 'injects all modules except the one from the query', ->
-            injectedSrc = @fn(moduleFixture)
+            injectedSrc = @injectFn(fixture)
             expect(injectedSrc).to.have.string "var Dispatcher = require('lib/dispatcher');"
             expect(injectedSrc).to.have.string "var EventEmitter = (injections.hasOwnProperty('events') ? injections['events'] : require('events')).EventEmitter;"
             expect(injectedSrc).to.have.string "var handleAction = (injections.hasOwnProperty('lib/handle_action') ? injections['lib/handle_action'] : require('lib/handle_action'));"
@@ -77,7 +80,7 @@ describe 'inject-loader', ->
             @context.query = '?-lib/dispatcher&-events'
 
           it 'injects all modules except the ones from the query', ->
-            injectedSrc = @fn(moduleFixture)
+            injectedSrc = @injectFn(fixture)
             expect(injectedSrc).to.have.string "var Dispatcher = require('lib/dispatcher');"
             expect(injectedSrc).to.have.string "var EventEmitter = require('events').EventEmitter;"
             expect(injectedSrc).to.have.string "var handleAction = (injections.hasOwnProperty('lib/handle_action') ? injections['lib/handle_action'] : require('lib/handle_action'));"
