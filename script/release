@@ -1,8 +1,8 @@
 #!/bin/bash -e
 export RELEASE=1
 
-if ! [ -e scripts/release ]; then
-  echo >&2 "Please run scripts/release from the repo root"
+if ! [ -e script/release ]; then
+  echo >&2 "Please run script/release from the repo root"
   exit 1
 fi
 
