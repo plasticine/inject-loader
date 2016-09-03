@@ -2,8 +2,8 @@ inject = require('../lib').default
 sinon = require('sinon')
 expect = require('chai').expect
 
-fixture = """
-  var Dispatcher = require('lib/dispatcher');
+source = """
+  var Dispatcher = require('lib/dispatcher'); var Herp = require('Derp');
   var EventEmitter = require('events').EventEmitter;
   const emitter = new EventEmitter();
 
@@ -30,18 +30,32 @@ describe 'inject-loader', ->
     describe 'injecting', ->
       it 'injects all require statements by default', ->
         src = "require('lib/thing')"
-        replacement = "(injections.hasOwnProperty('lib/thing') ? injections['lib/thing'] : require('lib/thing'))"
-        expect(@injectFn(src)).to.have.string replacement
+        expect(@injectFn(src)).to.have.string "__injectRequire('lib/thing')"
 
       it 'provides export variable to support use with CJS and Babel', ->
         src = "require('lib/thing')"
-        expect(@injectFn(src)).to.have.string "var module = {exports: {}};"
-        expect(@injectFn(src)).to.have.string "var exports = module.exports;"
+        expect(@injectFn(src)).to.have.string "var module = { exports: {} };"
         expect(@injectFn(src)).to.have.string "var exports = module.exports;"
 
       it 'returns the wrapped module exports', ->
         src = "require('lib/thing')"
         expect(@injectFn(src)).to.have.string "return module.exports;"
+
+      it 'returns a injector function that can inject dependencies', ->
+        src = "require('someModule')('foobar');"
+        someModuleStub = sinon.stub()
+        eval(@injectFn(src))
+        injectWrapper({'someModule': someModuleStub})
+        sinon.assert.calledOnce(someModuleStub)
+        sinon.assert.calledWithExactly(someModuleStub, 'foobar')
+
+      it 'throws an error if the user tries to specify an injection that doesnt exist', ->
+        src = "require('someModule')('foobar');"
+        someModuleStub = sinon.stub()
+        eval(@injectFn(src))
+        expect(=>
+          injectWrapper({someModule: someModuleStub, derp: sinon.stub()})
+        ).to.throw(Error, /One or more of the injections you passed in is invalid for the module you are attempting to inject into/);
 
     describe 'queries', ->
       describe 'empty', ->
@@ -49,18 +63,18 @@ describe 'inject-loader', ->
           @context.query = null
 
         it 'injects all modules', ->
-          injectedSrc = @injectFn(fixture)
-          expect(injectedSrc).to.have.string "var Dispatcher = (injections.hasOwnProperty('lib/dispatcher') ? injections['lib/dispatcher'] : require('lib/dispatcher'));"
-          expect(injectedSrc).to.have.string "var EventEmitter = (injections.hasOwnProperty('events') ? injections['events'] : require('events')).EventEmitter;"
-          expect(injectedSrc).to.have.string "var handleAction = (injections.hasOwnProperty('lib/handle_action') ? injections['lib/handle_action'] : require('lib/handle_action'));"
+          injectedSrc = @injectFn(source)
+          expect(injectedSrc).to.have.string "var Dispatcher = __injectRequire('lib/dispatcher');"
+          expect(injectedSrc).to.have.string "var EventEmitter = __injectRequire('events').EventEmitter;"
+          expect(injectedSrc).to.have.string "var handleAction = __injectRequire('lib/handle_action');"
 
       describe 'single specific injection', ->
         beforeEach ->
           @context.query = '?lib/dispatcher'
 
         it 'only injects the module from the query', ->
-          injectedSrc = @injectFn(fixture)
-          expect(injectedSrc).to.have.string "var Dispatcher = (injections.hasOwnProperty('lib/dispatcher') ? injections['lib/dispatcher'] : require('lib/dispatcher'));"
+          injectedSrc = @injectFn(source)
+          expect(injectedSrc).to.have.string "var Dispatcher = __injectRequire('lib/dispatcher');"
           expect(injectedSrc).to.have.string "var EventEmitter = require('events').EventEmitter;"
           expect(injectedSrc).to.have.string "var handleAction = require('lib/handle_action');"
 
@@ -69,9 +83,9 @@ describe 'inject-loader', ->
           @context.query = '?lib/dispatcher&events'
 
         it 'injects all modules from the query', ->
-          injectedSrc = @injectFn(fixture)
-          expect(injectedSrc).to.have.string "var Dispatcher = (injections.hasOwnProperty('lib/dispatcher') ? injections['lib/dispatcher'] : require('lib/dispatcher'));"
-          expect(injectedSrc).to.have.string "var EventEmitter = (injections.hasOwnProperty('events') ? injections['events'] : require('events')).EventEmitter;"
+          injectedSrc = @injectFn(source)
+          expect(injectedSrc).to.have.string "var Dispatcher = __injectRequire('lib/dispatcher');"
+          expect(injectedSrc).to.have.string "var EventEmitter = __injectRequire('events').EventEmitter;"
           expect(injectedSrc).to.have.string "var handleAction = require('lib/handle_action');"
 
       describe 'exculde single specific injection', ->
@@ -80,17 +94,17 @@ describe 'inject-loader', ->
             @context.query = '?-lib/dispatcher'
 
           it 'injects all modules except the one from the query', ->
-            injectedSrc = @injectFn(fixture)
+            injectedSrc = @injectFn(source)
             expect(injectedSrc).to.have.string "var Dispatcher = require('lib/dispatcher');"
-            expect(injectedSrc).to.have.string "var EventEmitter = (injections.hasOwnProperty('events') ? injections['events'] : require('events')).EventEmitter;"
-            expect(injectedSrc).to.have.string "var handleAction = (injections.hasOwnProperty('lib/handle_action') ? injections['lib/handle_action'] : require('lib/handle_action'));"
+            expect(injectedSrc).to.have.string "var EventEmitter = __injectRequire('events').EventEmitter;"
+            expect(injectedSrc).to.have.string "var handleAction = __injectRequire('lib/handle_action');"
 
         describe 'exculde multiple specific injections', ->
           beforeEach ->
             @context.query = '?-lib/dispatcher&-events'
 
           it 'injects all modules except the ones from the query', ->
-            injectedSrc = @injectFn(fixture)
+            injectedSrc = @injectFn(source)
             expect(injectedSrc).to.have.string "var Dispatcher = require('lib/dispatcher');"
             expect(injectedSrc).to.have.string "var EventEmitter = require('events').EventEmitter;"
-            expect(injectedSrc).to.have.string "var handleAction = (injections.hasOwnProperty('lib/handle_action') ? injections['lib/handle_action'] : require('lib/handle_action'));"
+            expect(injectedSrc).to.have.string "var handleAction = __injectRequire('lib/handle_action');"

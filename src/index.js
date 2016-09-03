@@ -1,12 +1,15 @@
 import loaderUtils from 'loader-utils';
-import invariant from 'invariant';
 
 function hasOnlyExcludeFlags(query) {
   return Object.keys(query).filter(k => query[k] === true).length === 0;
 }
 
-function escapePath(path) {
+function escapeSlash(path) {
   return path.replace('/', '\\/');
+}
+
+function unescapeQuote(path) {
+  return path.replace(/\'/g, '');
 }
 
 function quoteRegexString() {
@@ -24,12 +27,12 @@ function createRequireStringRegex(query) {
     // except them
     if (hasOnlyExcludeFlags(query)) {
       Object.keys(query).forEach(key => {
-        regexArray.push(`(?!${quoteRegexString() + escapePath(key)})`);
+        regexArray.push(`(?!${quoteRegexString() + escapeSlash(key)})`);
       });
       regexArray.push('([^\\)]+)');
     } else {
       regexArray.push(`(${quoteRegexString()}(`);
-      regexArray.push(Object.keys(query).map(escapePath).join('|'));
+      regexArray.push(Object.keys(query).map(escapeSlash).join('|'));
       regexArray.push(`)${quoteRegexString()})`);
     }
   }
@@ -41,14 +44,56 @@ function createRequireStringRegex(query) {
   return new RegExp(regexArray.join(''), 'g');
 };
 
-export default function inject(src) {
-  this.cacheable && this.cacheable();
-  const regex = createRequireStringRegex(loaderUtils.parseQuery(this.query));
+function getAllModuleDependencies(source, pattern) {
+  let match;
+  let dependencies = [];
+  while (match = pattern.exec(source)) {
+    dependencies.push(match);
+  }
+  return dependencies.map(x => x[1]).map(unescapeQuote);
+}
 
-  return `module.exports = function inject(injections) {
-var module = {exports: {}};
-var exports = module.exports;
-${src.replace(regex, '(injections.hasOwnProperty($1) ? injections[$1] : $&)')};
-return module.exports;
-}`;
+function createInjectorFunction(source, query = '') {
+  const requireStringRegex = createRequireStringRegex(loaderUtils.parseQuery(query));
+  const wrappedModuleDependencies = getAllModuleDependencies(source, requireStringRegex);
+  const dependencyInjectionTemplate = source.replace(requireStringRegex, '__injectRequire($1)');
+
+  function injectWrapper(__injections = {}, __options = {}) {
+    const __wrappedModuleDependencies = __WRAPPED_MODULE_DEPENDENCIES__;
+
+    function __validateInjections() {
+      const injectionKeys = Object.keys(__injections);
+      const invalidInjectionKeys = injectionKeys.filter(x => __wrappedModuleDependencies.indexOf(x) === -1)
+      if (invalidInjectionKeys.length > 0)
+        throw new Error(`One or more of the injections you passed in is invalid for the module you are attempting to inject into.
+
+- Valid injection targets for this module are: ${JSON.stringify(__wrappedModuleDependencies)}
+- The following injections were passed in:     ${JSON.stringify(injectionKeys)}
+- The following injections are invalid:        ${JSON.stringify(invalidInjectionKeys)}
+`)
+    }
+    __validateInjections();
+
+    const module = {exports: {}};
+    const exports = module.exports;
+
+    function __injectRequire(dependency) {
+      if (__injections.hasOwnProperty(dependency))
+        return __injections[dependency];
+      return require(dependency);
+    }
+
+    __INJECTIONS__
+    return module.exports;
+  }
+
+  return injectWrapper
+    .toString()
+    .replace(new RegExp(/__INJECTIONS__;/), dependencyInjectionTemplate)
+    .replace(new RegExp(/__WRAPPED_MODULE_DEPENDENCIES__/), JSON.stringify(wrappedModuleDependencies));
+}
+
+export default function inject(source) {
+  this.cacheable && this.cacheable();
+  return createInjectorFunction(source, this.query);
 }
