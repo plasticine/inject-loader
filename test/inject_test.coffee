@@ -33,6 +33,16 @@ describe 'inject-loader', ->
         replacement = "(injections.hasOwnProperty('lib/thing') ? injections['lib/thing'] : require('lib/thing'))"
         expect(@injectFn(src)).to.have.string replacement
 
+      it 'provides export variable to support use with CJS and Babel', ->
+        src = "require('lib/thing')"
+        expect(@injectFn(src)).to.have.string "var module = {exports: {}};"
+        expect(@injectFn(src)).to.have.string "var exports = module.exports;"
+        expect(@injectFn(src)).to.have.string "var exports = module.exports;"
+
+      it 'returns the wrapped module exports', ->
+        src = "require('lib/thing')"
+        expect(@injectFn(src)).to.have.string "return module.exports;"
+
     describe 'queries', ->
       describe 'empty', ->
         beforeEach ->
