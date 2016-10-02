@@ -1,4 +1,4 @@
-inject = require('../lib').default
+inject = require('../lib')
 sinon = require('sinon')
 expect = require('chai').expect
 
