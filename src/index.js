@@ -96,7 +96,7 @@ function createInjectorFunction({query, resourcePath}, source) {
     .replace(new RegExp(/__WRAPPED_MODULE_DEPENDENCIES__/), JSON.stringify(wrappedModuleDependencies));
 }
 
-export default function inject(source) {
+module.exports = function inject(source) {
   this.cacheable && this.cacheable();
   return createInjectorFunction(this, source);
 }
