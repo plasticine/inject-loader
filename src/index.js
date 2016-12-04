@@ -1,22 +1,27 @@
+// @flow
+
 import loaderUtils from 'loader-utils';
 
-function hasOnlyExcludeFlags(query) {
+const INJECTIONS_REGEX = new RegExp(/\$__INJECTIONS__/);
+const WRAPPED_MODULE_DEPENDENCIES = new RegExp(/\$__WRAPPED_MODULE_DEPENDENCIES__/);
+
+function hasOnlyExcludeFlags(query: Object): boolean {
   return Object.keys(query).filter(k => query[k] === true).length === 0;
 }
 
-function escapeSlash(path) {
+function escapeSlash(path: string): string {
   return path.replace('/', '\\/');
 }
 
-function unescapeQuote(path) {
+function unescapeQuote(path: string): string {
   return path.replace(/\'/g, '');
 }
 
-function quoteRegexString() {
+function quoteRegexString(): string {
   return '[\'|\"]{1}';
 }
 
-function createRequireStringRegex(query) {
+function createRequireStringRegex(query: Object): RegExp {
   const regexArray = [];
 
   // if there is no query then replace everything
@@ -44,7 +49,7 @@ function createRequireStringRegex(query) {
   return new RegExp(regexArray.join(''), 'g');
 };
 
-function getAllModuleDependencies(source, pattern) {
+function getAllModuleDependencies(source: string, pattern: RegExp) {
   let match;
   let dependencies = [];
   while (match = pattern.exec(source)) {
@@ -53,7 +58,7 @@ function getAllModuleDependencies(source, pattern) {
   return dependencies.map(x => x[1]).map(unescapeQuote);
 }
 
-function createInjectorFunction({query, resourcePath}, source) {
+function createInjectorFunction({query, resourcePath}, source: string) {
   const requireStringRegex = createRequireStringRegex(loaderUtils.parseQuery(query));
   const wrappedModuleDependencies = getAllModuleDependencies(source, requireStringRegex);
   const dependencyInjectionTemplate = source.replace(requireStringRegex, '__injectRequire($1)');
@@ -62,7 +67,8 @@ function createInjectorFunction({query, resourcePath}, source) {
     console.warn(`Inject Loader: The module you are trying to inject into (\`${resourcePath}\`) does not seem to have any dependencies, are you sure you want to do this?`);
 
   function injectWrapper(__injections = {}) {
-    const __wrappedModuleDependencies = __WRAPPED_MODULE_DEPENDENCIES__;
+    // $FlowIgnore
+    const __wrappedModuleDependencies = $__WRAPPED_MODULE_DEPENDENCIES__;
 
     (function __validateInjection() {
       const injectionKeys = Object.keys(__injections);
@@ -79,25 +85,27 @@ function createInjectorFunction({query, resourcePath}, source) {
     const module = {exports: {}};
     const exports = module.exports;
 
-    function __injectRequire(dependency) {
+    function __injectRequire(dependency: string) {
       if (__injections.hasOwnProperty(dependency))
         return __injections[dependency];
+      // $FlowIgnore
       return require(dependency);
     }
 
-    __INJECTIONS__
+    // $FlowIgnore
+    $__INJECTIONS__
     return module.exports;
   }
 
   // lol.
   return injectWrapper
     .toString()
-    .replace(new RegExp(/__INJECTIONS__;/), dependencyInjectionTemplate)
-    .replace(new RegExp(/__WRAPPED_MODULE_DEPENDENCIES__/), JSON.stringify(wrappedModuleDependencies));
+    .replace(INJECTIONS_REGEX, dependencyInjectionTemplate)
+    .replace(WRAPPED_MODULE_DEPENDENCIES, JSON.stringify(wrappedModuleDependencies));
 }
 
 
-function inject(source) {
+function inject(source: string): string {
   this.cacheable && this.cacheable();
   return createInjectorFunction(this, source);
 }

@@ -6,6 +6,10 @@ var _loaderUtils2 = _interopRequireDefault(_loaderUtils);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var INJECTIONS_REGEX = new RegExp(/\$__INJECTIONS__/);
+
+var WRAPPED_MODULE_DEPENDENCIES = new RegExp(/\$__WRAPPED_MODULE_DEPENDENCIES__/);
+
 function hasOnlyExcludeFlags(query) {
   return Object.keys(query).filter(function (k) {
     return query[k] === true;
@@ -64,8 +68,8 @@ function getAllModuleDependencies(source, pattern) {
 }
 
 function createInjectorFunction(_ref, source) {
-  var query = _ref.query;
-  var resourcePath = _ref.resourcePath;
+  var query = _ref.query,
+      resourcePath = _ref.resourcePath;
 
   var requireStringRegex = createRequireStringRegex(_loaderUtils2.default.parseQuery(query));
   var wrappedModuleDependencies = getAllModuleDependencies(source, requireStringRegex);
@@ -74,9 +78,13 @@ function createInjectorFunction(_ref, source) {
   if (wrappedModuleDependencies.length === 0) console.warn('Inject Loader: The module you are trying to inject into (`' + resourcePath + '`) does not seem to have any dependencies, are you sure you want to do this?');
 
   function injectWrapper() {
-    var __injections = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+    var __injections = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-    var __wrappedModuleDependencies = __WRAPPED_MODULE_DEPENDENCIES__;
+    console.log('------------------------------');
+    console.log(__injections);
+
+    // $FlowIgnore
+    var __wrappedModuleDependencies = $__WRAPPED_MODULE_DEPENDENCIES__;
 
     (function __validateInjection() {
       var injectionKeys = Object.keys(__injections);
@@ -91,15 +99,17 @@ function createInjectorFunction(_ref, source) {
 
     function __injectRequire(dependency) {
       if (__injections.hasOwnProperty(dependency)) return __injections[dependency];
+      // $FlowIgnore
       return require(dependency);
     }
 
-    __INJECTIONS__;
+    // $FlowIgnore
+    $__INJECTIONS__;
     return module.exports;
   }
 
   // lol.
-  return injectWrapper.toString().replace(new RegExp(/__INJECTIONS__;/), dependencyInjectionTemplate).replace(new RegExp(/__WRAPPED_MODULE_DEPENDENCIES__/), JSON.stringify(wrappedModuleDependencies));
+  return injectWrapper.toString().replace(INJECTIONS_REGEX, dependencyInjectionTemplate).replace(WRAPPED_MODULE_DEPENDENCIES, JSON.stringify(wrappedModuleDependencies));
 }
 
 function inject(source) {
