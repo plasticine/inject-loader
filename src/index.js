@@ -1,65 +1,13 @@
 // @flow
 
-import loaderUtils from 'loader-utils';
+import createRequireStringRegex from './createRequireStringRegex';
+import getAllModuleDependencies from './getAllModuleDependencies';
 
 const INJECTIONS_REGEX = new RegExp(/\$__INJECTIONS__/);
 const WRAPPED_MODULE_DEPENDENCIES = new RegExp(/\$__WRAPPED_MODULE_DEPENDENCIES__/);
 
-function hasOnlyExcludeFlags(query: Object): boolean {
-  return Object.keys(query).filter(k => query[k] === true).length === 0;
-}
-
-function escapeSlash(path: string): string {
-  return path.replace('/', '\\/');
-}
-
-function unescapeQuote(path: string): string {
-  return path.replace(/\'/g, '');
-}
-
-function quoteRegexString(): string {
-  return '[\'|\"]{1}';
-}
-
-function createRequireStringRegex(query: Object): RegExp {
-  const regexArray = [];
-
-  // if there is no query then replace everything
-  if (Object.keys(query).length === 0) {
-    regexArray.push('([^\\)]+)');
-  } else {
-    // if there are only negation matches in the query then replace everything
-    // except them
-    if (hasOnlyExcludeFlags(query)) {
-      Object.keys(query).forEach(key => {
-        regexArray.push(`(?!${quoteRegexString() + escapeSlash(key)})`);
-      });
-      regexArray.push('([^\\)]+)');
-    } else {
-      regexArray.push(`(${quoteRegexString()}(`);
-      regexArray.push(Object.keys(query).map(escapeSlash).join('|'));
-      regexArray.push(`)${quoteRegexString()})`);
-    }
-  }
-
-  // Wrap the regex to match `require()`
-  regexArray.unshift('require\\(');
-  regexArray.push('\\)');
-
-  return new RegExp(regexArray.join(''), 'g');
-};
-
-function getAllModuleDependencies(source: string, pattern: RegExp) {
-  let match;
-  let dependencies = [];
-  while (match = pattern.exec(source)) {
-    dependencies.push(match);
-  }
-  return dependencies.map(x => x[1]).map(unescapeQuote);
-}
-
 function createInjectorFunction({query, resourcePath}, source: string) {
-  const requireStringRegex = createRequireStringRegex(loaderUtils.parseQuery(query));
+  const requireStringRegex = createRequireStringRegex(query);
   const wrappedModuleDependencies = getAllModuleDependencies(source, requireStringRegex);
   const dependencyInjectionTemplate = source.replace(requireStringRegex, '__injectRequire($1)');
 
@@ -104,10 +52,7 @@ function createInjectorFunction({query, resourcePath}, source: string) {
     .replace(WRAPPED_MODULE_DEPENDENCIES, JSON.stringify(wrappedModuleDependencies));
 }
 
-
-function inject(source: string): string {
+export default function inject(source: string): string {
   this.cacheable && this.cacheable();
   return createInjectorFunction(this, source);
 }
-
-module.exports = inject;

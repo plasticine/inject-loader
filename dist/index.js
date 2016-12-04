@@ -1,5 +1,10 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = inject;
+
 var _loaderUtils = require('loader-utils');
 
 var _loaderUtils2 = _interopRequireDefault(_loaderUtils);
@@ -80,9 +85,6 @@ function createInjectorFunction(_ref, source) {
   function injectWrapper() {
     var __injections = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
-    console.log('------------------------------');
-    console.log(__injections);
-
     // $FlowIgnore
     var __wrappedModuleDependencies = $__WRAPPED_MODULE_DEPENDENCIES__;
 
@@ -116,5 +118,3 @@ function inject(source) {
   this.cacheable && this.cacheable();
   return createInjectorFunction(this, source);
 }
-
-module.exports = inject;

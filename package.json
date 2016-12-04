@@ -4,9 +4,7 @@
   "description": "A Webpack loader for injecting code into modules via their dependancies",
   "main": "dist/index.js",
   "scripts": {
-    "build": "./node_modules/.bin/babel -d dist src/",
-    "pretest": "npm run build",
-    "test:old": "mocha --compilers coffee:coffee-script/register",
+    "build": "babel -d dist src/",
     "test": "flow && jest",
     "prepublish": "npm run build"
   },

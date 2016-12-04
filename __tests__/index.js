@@ -1,5 +1,3 @@
-// @flow
-
 import inject from '../src';
 
 function createTestFunctionForInjector(injector: string): Function {
@@ -62,7 +60,7 @@ describe('inject-loader', function() {
         expect(someModuleStub).toHaveBeenCalledWith('foobar');
       });
 
-      test('...', () => {
+      test('warns when the injected module contains no dependencies', () => {
         const _console = console;
         console = {warn: jest.fn()}
         context.resourcePath = 'my/sillyModule.js';
@@ -79,7 +77,7 @@ describe('inject-loader', function() {
             someModule: someModuleStub,
             derp: () => { return; }
           })
-        ).toThrowError(/One or more of the injections you passed in is invalid for the module you are attempting to inject into/);
+        ).toThrowError(/One or more of the injections you passed in is invalid for the module you are attempting to inject into./);
       });
     });
 
