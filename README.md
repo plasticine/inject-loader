@@ -1,6 +1,6 @@
 # inject-loader
 
-[![Build Status](https://travis-ci.org/plasticine/inject-loader.svg?branch=master)](https://travis-ci.org/plasticine/inject-loader) [![Dependency Status](https://gemnasium.com/plasticine/inject-loader.svg)](https://gemnasium.com/plasticine/inject-loader) [![npm version](https://img.shields.io/npm/v/inject-loader.svg?style=flat-square)](https://www.npmjs.com/package/inject-loader) [![npm downloads](https://img.shields.io/npm/dm/inject-loader.svg?style=flat-square)](https://www.npmjs.com/package/inject-loader)
+[![build status](https://img.shields.io/travis/plasticine/inject-loader/master.svg?style=flat-square)](https://travis-ci.org/plasticine/inject-loader) [![Gemnasium](https://img.shields.io/gemnasium/plasticine/inject-loader.svg?style=flat-square)](https://gemnasium.com/plasticine/inject-loader) [![npm version](https://img.shields.io/npm/v/inject-loader.svg?style=flat-square)](https://www.npmjs.com/package/inject-loader) [![npm downloads](https://img.shields.io/npm/dm/inject-loader.svg?style=flat-square)](https://www.npmjs.com/package/inject-loader)
 
 **💉👾 A Webpack loader for injecting code into modules via their dependencies**
 
