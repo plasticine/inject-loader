@@ -1,7 +1,26 @@
 import inject from '../src';
 
+const InjectMatchers = {
+  toHaveInjectedDependency(util, customEqualityTesters) {
+    return {
+      compare(source, dependency) {
+        const result = {};
+        result.pass = util.contains(source, `(__injection('${dependency}') || require('${dependency}')`);
+
+        if (result.pass) {
+          result.message = `Expected "${source}" not to contain injection for "${dependency}"`;
+        } else {
+          result.message = `Expected "${source}" to contain injection for "${dependency}"`;
+        }
+
+        return result;
+      }
+    }
+  }
+}
+
 function createTestFunctionForInjector(injector: string): Function {
-  return new Function(`(${injector}).apply(null, arguments);`);
+  return new Function(`var module = {exports: {}}; (${injector}).apply(null, arguments);`);
 }
 
 const SOURCE = `
@@ -20,6 +39,7 @@ describe('inject-loader', function() {
   let context;
 
   beforeAll(() => {
+    jasmine.addMatchers(InjectMatchers);
     context = {
       query: '',
       resourcePath: '',
@@ -41,7 +61,7 @@ describe('inject-loader', function() {
   describe('loader', () => {
     describe('injecting', () => {
       test('injects all require statements by default', () => {
-        expect(injectFn("require('lib/thing')")).toContain("__injectRequire('lib/thing')");
+        expect(injectFn("require('lib/thing')")).toHaveInjectedDependency('lib/thing');
       });
 
       test('provides export variable to support use with CJS and Babel', () => {
@@ -85,9 +105,9 @@ describe('inject-loader', function() {
       describe('empty', () => {
         test('injects all modules', () => {
           const injectedSrc = injectFn(SOURCE);
-          expect(injectedSrc).toContain("var Dispatcher = __injectRequire('lib/dispatcher');");
-          expect(injectedSrc).toContain("var EventEmitter = __injectRequire('events').EventEmitter;");
-          expect(injectedSrc).toContain("var handleAction = __injectRequire('lib/handle_action');");
+          expect(injectedSrc).toHaveInjectedDependency('lib/dispatcher');
+          expect(injectedSrc).toHaveInjectedDependency('events');
+          expect(injectedSrc).toHaveInjectedDependency('lib/handle_action');
         });
       });
 
@@ -98,9 +118,9 @@ describe('inject-loader', function() {
 
         test('only injects the module from the query', () => {
           const injectedSrc = injectFn(SOURCE)
-          expect(injectedSrc).toContain("var Dispatcher = __injectRequire('lib/dispatcher');");
-          expect(injectedSrc).toContain("var EventEmitter = require('events').EventEmitter;");
-          expect(injectedSrc).toContain("var handleAction = require('lib/handle_action');");
+          expect(injectedSrc).toHaveInjectedDependency('lib/dispatcher');
+          expect(injectedSrc).not.toHaveInjectedDependency('events');
+          expect(injectedSrc).not.toHaveInjectedDependency('lib/handle_action');
         });
       });
 
@@ -112,9 +132,9 @@ describe('inject-loader', function() {
 
           test('only injects the module from the query', () => {
             const injectedSrc = injectFn(SOURCE)
-            expect(injectedSrc).toContain("var Dispatcher = __injectRequire('lib/dispatcher');");
-            expect(injectedSrc).toContain("var EventEmitter = __injectRequire('events').EventEmitter;");
-            expect(injectedSrc).toContain("var handleAction = require('lib/handle_action');");
+            expect(injectedSrc).toHaveInjectedDependency('lib/dispatcher');
+            expect(injectedSrc).toHaveInjectedDependency('events');
+            expect(injectedSrc).not.toHaveInjectedDependency('lib/handle_action');
           });
         });
       });
@@ -127,9 +147,9 @@ describe('inject-loader', function() {
 
           test('only injects the module from the query', () => {
             const injectedSrc = injectFn(SOURCE)
-            expect(injectedSrc).toContain("var Dispatcher = require('lib/dispatcher');");
-            expect(injectedSrc).toContain("var EventEmitter = __injectRequire('events').EventEmitter;");
-            expect(injectedSrc).toContain("var handleAction = __injectRequire('lib/handle_action');");
+            expect(injectedSrc).not.toHaveInjectedDependency('lib/dispatcher');
+            expect(injectedSrc).toHaveInjectedDependency('events');
+            expect(injectedSrc).toHaveInjectedDependency('lib/handle_action');
           });
         });
       });
@@ -142,9 +162,9 @@ describe('inject-loader', function() {
 
           test('only injects the module from the query', () => {
             const injectedSrc = injectFn(SOURCE)
-            expect(injectedSrc).toContain("var Dispatcher = require('lib/dispatcher');");
-            expect(injectedSrc).toContain("var EventEmitter = require('events').EventEmitter;");
-            expect(injectedSrc).toContain("var handleAction = __injectRequire('lib/handle_action');");
+            expect(injectedSrc).not.toHaveInjectedDependency('lib/dispatcher');
+            expect(injectedSrc).not.toHaveInjectedDependency('events');
+            expect(injectedSrc).toHaveInjectedDependency('lib/handle_action');
           });
         });
       });

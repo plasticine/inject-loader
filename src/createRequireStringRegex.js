@@ -9,7 +9,7 @@ export default function createRequireStringRegex(querystring: string = ''): RegE
 
   // if there is no query then replace everything
   if (Object.keys(query).length === 0) {
-    regexArray.push(`(${quoteRegexString()}[^\\)]+${quoteRegexString()})`);
+    regexArray.push(`${quoteRegexString()}([^\\)]+)${quoteRegexString()}`);
   } else {
     // if there are only negation matches in the query then replace everything
     // except them

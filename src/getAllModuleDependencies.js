@@ -8,5 +8,5 @@ export default function getAllModuleDependencies(source: string, pattern: RegExp
   while (match = pattern.exec(source)) {
     dependencies.push(match);
   }
-  return dependencies.map(x => x[1]).map(unescapeQuote);
+  return dependencies.map(x => unescapeQuote(x[1]));
 }

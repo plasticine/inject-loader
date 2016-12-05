@@ -4,7 +4,7 @@
   "description": "A Webpack loader for injecting code into modules via their dependancies",
   "main": "dist/index.js",
   "scripts": {
-    "build": "babel -d dist src/",
+    "build": "babel -d dist src",
     "test": "flow && jest",
     "prepublish": "npm run build"
   },

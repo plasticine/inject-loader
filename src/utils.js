@@ -13,5 +13,5 @@ export function escapeSlash(path: string): string {
 }
 
 export function unescapeQuote(path: string): string {
-  return path.replace(/\'/g, '');
+  return path.replace(/'|"/g, '"');
 }
