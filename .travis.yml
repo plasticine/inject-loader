@@ -4,3 +4,7 @@ node_js:
   - "node"
   - "6"
   - "5"
+script:
+- yarn test
+- cd example/webpack1-babel && karma start
+- cd example/webpack2-babel && karma start

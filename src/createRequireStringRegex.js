@@ -1,33 +1,10 @@
 // @flow
 
-import loaderUtils from 'loader-utils';
-import {hasOnlyExcludeFlags, quoteRegexString, escapeSlash} from './utils';
+import {quoteRegexString, escapeSlash} from './utils';
 
-export default function createRequireStringRegex(querystring: string = ''): RegExp {
-  const query = loaderUtils.parseQuery(querystring);
-  const regexArray = [];
+const MATCH_ALL_REQUIRE_STATEMENTS = `${quoteRegexString()}([^\\)]+)${quoteRegexString()}`;
 
-  // if there is no query then replace everything
-  if (Object.keys(query).length === 0) {
-    regexArray.push(`${quoteRegexString()}([^\\)]+)${quoteRegexString()}`);
-  } else {
-    // if there are only negation matches in the query then replace everything
-    // except them
-    if (hasOnlyExcludeFlags(query)) {
-      Object.keys(query).forEach(key => {
-        regexArray.push(`(?!${quoteRegexString() + escapeSlash(key)})`);
-      });
-      regexArray.push('([^\\)]+)');
-    } else {
-      regexArray.push(`(${quoteRegexString()}(`);
-      regexArray.push(Object.keys(query).map(escapeSlash).join('|'));
-      regexArray.push(`)${quoteRegexString()})`);
-    }
-  }
-
-  // Wrap the regex to match `require()`
-  regexArray.unshift('require\\(');
-  regexArray.push('\\)');
-
+export default function createRequireStringRegex(): RegExp {
+  const regexArray = ['require\\(', MATCH_ALL_REQUIRE_STATEMENTS, '\\)'];
   return new RegExp(regexArray.join(''), 'g');
-};
+}

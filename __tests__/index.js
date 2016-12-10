@@ -5,7 +5,7 @@ const InjectMatchers = {
     return {
       compare(source, dependency) {
         const result = {};
-        result.pass = util.contains(source, `(__injection('${dependency}') || require('${dependency}')`);
+        result.pass = util.contains(source, `(__injection("${dependency}") || require("${dependency}")`);
 
         if (result.pass) {
           result.message = `Expected "${source}" not to contain injection for "${dependency}"`;
@@ -61,7 +61,10 @@ describe('inject-loader', function() {
   describe('loader', () => {
     describe('injecting', () => {
       test('injects all require statements by default', () => {
-        expect(injectFn("require('lib/thing')")).toHaveInjectedDependency('lib/thing');
+        const injectedSrc = injectFn(SOURCE);
+        expect(injectedSrc).toHaveInjectedDependency('lib/dispatcher');
+        expect(injectedSrc).toHaveInjectedDependency('events');
+        expect(injectedSrc).toHaveInjectedDependency('lib/handle_action');
       });
 
       test('provides export variable to support use with CJS and Babel', () => {
@@ -98,75 +101,6 @@ describe('inject-loader', function() {
             derp: () => { return; }
           })
         ).toThrowError(/One or more of the injections you passed in is invalid for the module you are attempting to inject into./);
-      });
-    });
-
-    describe('queries', () => {
-      describe('empty', () => {
-        test('injects all modules', () => {
-          const injectedSrc = injectFn(SOURCE);
-          expect(injectedSrc).toHaveInjectedDependency('lib/dispatcher');
-          expect(injectedSrc).toHaveInjectedDependency('events');
-          expect(injectedSrc).toHaveInjectedDependency('lib/handle_action');
-        });
-      });
-
-      describe('single specific injection', () => {
-        beforeEach(() => {
-          context.query = '?lib/dispatcher';
-        });
-
-        test('only injects the module from the query', () => {
-          const injectedSrc = injectFn(SOURCE)
-          expect(injectedSrc).toHaveInjectedDependency('lib/dispatcher');
-          expect(injectedSrc).not.toHaveInjectedDependency('events');
-          expect(injectedSrc).not.toHaveInjectedDependency('lib/handle_action');
-        });
-      });
-
-      describe('multiple specific injection', () => {
-        test('injects all modules from the query', () => {
-          beforeEach(() => {
-            context.query = '?lib/dispatcher&events';
-          });
-
-          test('only injects the module from the query', () => {
-            const injectedSrc = injectFn(SOURCE)
-            expect(injectedSrc).toHaveInjectedDependency('lib/dispatcher');
-            expect(injectedSrc).toHaveInjectedDependency('events');
-            expect(injectedSrc).not.toHaveInjectedDependency('lib/handle_action');
-          });
-        });
-      });
-
-      describe('exculde single specific injection', () => {
-        test('injects all modules except the one from the query', () => {
-          beforeEach(() => {
-            context.query = '?-lib/dispatcher';
-          });
-
-          test('only injects the module from the query', () => {
-            const injectedSrc = injectFn(SOURCE)
-            expect(injectedSrc).not.toHaveInjectedDependency('lib/dispatcher');
-            expect(injectedSrc).toHaveInjectedDependency('events');
-            expect(injectedSrc).toHaveInjectedDependency('lib/handle_action');
-          });
-        });
-      });
-
-      describe('exculde multiple specific injections', () => {
-        test('injects all modules except the ones from the query', () => {
-          beforeEach(() => {
-            context.query = '?-lib/dispatcher&-events';
-          });
-
-          test('only injects the module from the query', () => {
-            const injectedSrc = injectFn(SOURCE)
-            expect(injectedSrc).not.toHaveInjectedDependency('lib/dispatcher');
-            expect(injectedSrc).not.toHaveInjectedDependency('events');
-            expect(injectedSrc).toHaveInjectedDependency('lib/handle_action');
-          });
-        });
       });
     });
   });

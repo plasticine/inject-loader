@@ -1,5 +1,6 @@
 // @flow
 
+import loaderUtils from 'loader-utils';
 import createRequireStringRegex from './createRequireStringRegex';
 import getAllModuleDependencies from './getAllModuleDependencies';
 
@@ -13,6 +14,7 @@ type WebpackContext = {
 };
 
 function __createInjectorFunction({query, resourcePath}: WebpackContext, source: string) {
+  // const query = loaderUtils.parseQuery(querystring);
   const requireStringRegex = createRequireStringRegex(query);
   const wrappedModuleDependencies = getAllModuleDependencies(source, requireStringRegex);
   const dependencyInjectedSource = source.replace(requireStringRegex, __WRAPPED_MODULE_REPLACEMENT);
