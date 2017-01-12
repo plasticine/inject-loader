@@ -43,29 +43,9 @@ MyModule = MyModuleInjector({
   'events': EventsMock,
   'lib/handle_action': HandleActionMock
 })
-
-// It is also possible to only mock only explicit require
-// statements via passing in their path as a flag
-MyModuleInjector = require('inject?lib/dispatcher!MyStore')
-// only 'lib/dispatcher' is wrapped in an injector
-MyModule = MyModuleInjector({'lib/dispatcher': DispatcherMock})
-
-// this also works for multiple flags & requires
-MyModuleInjector = require('inject?lib/dispatcher&events!MyStore')
-// only 'lib/dispatcher' and 'events' are wrapped in injectors
-MyModule = MyModuleInjector({
-  'lib/dispatcher': DispatcherMock,
-  'events': EventsMock
-})
-
-// you can also explicitly exclude dependencies from being injected
-MyModuleInjector = require('inject?-lib/dispatcher!MyStore')
-// everything except 'lib/dispatcher' is wrapped in an injector
-MyModule = MyModuleInjector({
-  'events': EventsMock,
-  'lib/handle_action': HandleActionMock
-})
 ```
+
+There are a few examples of complete test setups for both Webpack 1 & 2 in the [`example`](./example) folder.
 
 ## License
 
