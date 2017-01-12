@@ -1,5 +1,9 @@
 'use strict';
 
+var _loaderUtils = require('loader-utils');
+
+var _loaderUtils2 = _interopRequireDefault(_loaderUtils);
+
 var _createRequireStringRegex = require('./createRequireStringRegex');
 
 var _createRequireStringRegex2 = _interopRequireDefault(_createRequireStringRegex);
@@ -11,6 +15,7 @@ var _getAllModuleDependencies2 = _interopRequireDefault(_getAllModuleDependencie
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var __INJECTED_SOURCE_REGEX = new RegExp(/\$__INJECTED_SOURCE__;/);
+
 var __WRAPPED_MODULE_DEPENDENCIES_REGEX = new RegExp(/\$__WRAPPED_MODULE_DEPENDENCIES__;/);
 var __WRAPPED_MODULE_REPLACEMENT = '(__injection("$1") || require("$1"))';
 
@@ -18,6 +23,7 @@ function __createInjectorFunction(_ref, source) {
   var query = _ref.query,
       resourcePath = _ref.resourcePath;
 
+  // const query = loaderUtils.parseQuery(querystring);
   var requireStringRegex = (0, _createRequireStringRegex2.default)(query);
   var wrappedModuleDependencies = (0, _getAllModuleDependencies2.default)(source, requireStringRegex);
   var dependencyInjectedSource = source.replace(requireStringRegex, __WRAPPED_MODULE_REPLACEMENT);
