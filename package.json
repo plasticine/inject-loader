@@ -35,7 +35,10 @@
   "jest": {
     "bail": true,
     "notify": true,
-    "testPathIgnorePatterns": ["/node_modules/", "/example/"]
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/example/"
+    ]
   },
   "keywords": [
     "webpack",
