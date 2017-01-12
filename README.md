@@ -14,9 +14,7 @@ This is particularly useful for writing tests where mocking things inside your m
 
 Use the inject loader by adding `inject!` when you use `require`, this will return a function that can be passed things to inject.
 
-By default all `require` statements in an injected module will be altered to be replaced with an injector.
-
-This behaviour can be customised by passing along flags when using the loader to either explicitly include or exclude dependencies from being injected.
+By default all `require` statements in an injected module will be altered to be replaced with an injector, though if a replacement it not specified the default will be used.
 
 ### Examples
 
