@@ -5,7 +5,11 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "babel -d dist src",
-    "test": "flow && jest && ./script/integration_test",
+    "test": "yarn test:unit && yarn test:integration",
+    "test:unit": "flow && jest",
+    "test:integration": "yarn test:integration:install && yarn test:integration:run",
+    "test:integration:install": "cd example/webpack1-babel && yarn && cd ../webpack2-babel && yarn",
+    "test:integration:run": "cd ./example/webpack1-babel && yarn test && cd ../webpack2-babel && yarn test",
     "prepublish": "npm run build"
   },
   "files": [
@@ -18,16 +22,13 @@
     "url": "git@github.com:plasticine/inject-loader.git"
   },
   "license": "MIT",
-  "dependencies": {
-    "loader-utils": "^0.2.3"
-  },
   "devDependencies": {
     "babel-cli": "^6.14.0",
+    "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-transform-flow-strip-types": "^6.18.0",
     "babel-preset-es2015": "^6.14.0",
-    "flow-bin": "^0.36.0",
-    "jest": "^17.0.3",
-    "karma-phantomjs-launcher": "^1.0.2"
+    "flow-bin": "^0.40.0",
+    "jest": "^17.0.3"
   },
   "peerDependencies": {
     "webpack": "^1 || ^2.2.0-rc"

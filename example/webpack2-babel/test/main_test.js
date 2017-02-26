@@ -10,7 +10,7 @@ describe('Main', function() {
     let mainModuleInjector;
 
     beforeEach(() => {
-      mainModuleInjector = require('inject-loader!main');
+      mainModuleInjector = require('../../../!main');
     });
 
     it('allows for injecting code into a subset of dependencies', () => {
