@@ -13,7 +13,6 @@ module.exports = function karmaConfig(config) {
       'test/*_test.js': ['webpack'],
     },
 
-    reporters: ['progress'],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,

@@ -1,107 +1,62 @@
 import inject from '../src';
+import * as InjectorTasks from '../src/InjectorTasks.js'
 
-const InjectMatchers = {
-  toHaveInjectedDependency(util, customEqualityTesters) {
-    return {
-      compare(source, dependency) {
-        const result = {};
-        result.pass = util.contains(source, `(__injection("${dependency}") || require("${dependency}")`);
+describe('Index', () => {
+  const context = {
+    resourcePath: "mockModule"
+  };
+  describe('inject', () => {
+    beforeEach(() => {
+      context.cacheable = jest.fn()
+      console.warn = jest.fn();
+    });
+    test('injecting without dependencies shows warning and continues', () => {
+      InjectorTasks.getModuleDependencies = jest.fn().mockReturnValue([]);
+      InjectorTasks.replaceDependencies = jest.fn().mockReturnValue("source with replaced dependencies");
+      InjectorTasks.injectIntoWrapper = jest.fn().mockReturnValue("final source");
 
-        if (result.pass) {
-          result.message = `Expected "${source}" not to contain injection for "${dependency}"`;
-        } else {
-          result.message = `Expected "${source}" to contain injection for "${dependency}"`;
-        }
+      const injectedCode = inject.call(context, `original source`);
+      expect(context.cacheable).toHaveBeenCalled();
+      expect(context.cacheable.mock.calls.length).toBe(1);
+      expect(InjectorTasks.getModuleDependencies).toHaveBeenCalledWith("original source");
+      expect(InjectorTasks.getModuleDependencies.mock.calls.length).toBe(1);
+      expect(console.warn.mock.calls.length).toBe(1);
+      expect(console.warn).toHaveBeenCalledWith("Inject Loader: The module you are trying to inject into ('mockModule') does not seem to have any dependencies, are you sure you want to do this?");
+      expect(InjectorTasks.replaceDependencies).toHaveBeenCalledWith("original source");
+      expect(InjectorTasks.injectIntoWrapper).toHaveBeenCalledWith([], "source with replaced dependencies");
+      expect(injectedCode).toEqual("final source");
+    });
+    test('injecting with dependencies does not warn', () => {
+      InjectorTasks.getModuleDependencies = jest.fn().mockReturnValue(["dependency", "anotherDependency"]);
+      InjectorTasks.replaceDependencies = jest.fn().mockReturnValue("source with replaced dependencies");
+      InjectorTasks.injectIntoWrapper = jest.fn().mockReturnValue("final source");
 
-        return result;
-      }
-    }
-  }
-}
+      const injectedCode = inject.call(context, `original source`);
+      expect(context.cacheable).toHaveBeenCalled();
+      expect(context.cacheable.mock.calls.length).toBe(1);
+      expect(InjectorTasks.getModuleDependencies).toHaveBeenCalledWith("original source");
+      expect(console.warn).not.toHaveBeenCalled();
+      expect(InjectorTasks.getModuleDependencies.mock.calls.length).toBe(1);
+      expect(InjectorTasks.replaceDependencies).toHaveBeenCalledWith("original source");
+      expect(InjectorTasks.injectIntoWrapper).toHaveBeenCalledWith(["dependency", "anotherDependency"], "source with replaced dependencies");
+      expect(injectedCode).toEqual("final source");
+    });
+    test('if the cacheable property does not exist, do not call it', () => {
+      // This is a little difficult to test as something that doesn't exist can't be mocked.
+      // Deleting the key and ensuring that it doesn't crash is the best we can do.
+      delete context.cacheable;
+      InjectorTasks.getModuleDependencies = jest.fn().mockReturnValue([]);
+      InjectorTasks.replaceDependencies = jest.fn().mockReturnValue("source with replaced dependencies");
+      InjectorTasks.injectIntoWrapper = jest.fn().mockReturnValue("final source");
 
-function createTestFunctionForInjector(injector: string): Function {
-  return new Function(`var module = {exports: {}}; (${injector}).apply(null, arguments);`);
-}
-
-const SOURCE = `
-  var Dispatcher = require('lib/dispatcher'); var Herp = require('Derp');
-  var EventEmitter = require('events').EventEmitter;
-  const emitter = new EventEmitter();
-
-  if (something)
-    var handleAction = require('lib/handle_action');
-
-  Dispatcher.register(handleAction, 'MyStore');
-`;
-
-describe('inject-loader', function() {
-  let injectFn;
-  let context;
-
-  beforeAll(() => {
-    jasmine.addMatchers(InjectMatchers);
-    context = {
-      query: '',
-      resourcePath: '',
-      cacheable: () => true
-    }
-    injectFn = inject.bind(context)
-  })
-
-  beforeEach(() => {
-    context.cacheable = jest.fn(() => true);
-  });
-
-  test('it is cacheable', () => {
-    expect(context.cacheable).not.toHaveBeenCalled();
-    injectFn('require("foo")');
-    expect(context.cacheable).toHaveBeenCalled();
-  });
-
-  describe('loader', () => {
-    describe('injecting', () => {
-      test('injects all require statements by default', () => {
-        const injectedSrc = injectFn(SOURCE);
-        expect(injectedSrc).toHaveInjectedDependency('lib/dispatcher');
-        expect(injectedSrc).toHaveInjectedDependency('events');
-        expect(injectedSrc).toHaveInjectedDependency('lib/handle_action');
-      });
-
-      test('provides export variable to support use with CJS and Babel', () => {
-        expect(injectFn("require('lib/thing')")).toContain("var module = { exports: {} };");
-        expect(injectFn("require('lib/thing')")).toContain("var exports = module.exports;");
-      });
-
-      test('returns the wrapped module exports', () => {
-        expect(injectFn("require('lib/thing')")).toContain("return module.exports;");
-      });
-
-      test('returns a injector function that can inject dependencies', () => {
-        const someModuleStub = jest.fn(() => true);
-        const injectWrapper = createTestFunctionForInjector(injectFn("require('someModule')('foobar');"));
-        injectWrapper({someModule: someModuleStub});
-        expect(someModuleStub).toHaveBeenCalledWith('foobar');
-      });
-
-      test('warns when the injected module contains no dependencies', () => {
-        const _console = console;
-        console = {warn: jest.fn()}
-        context.resourcePath = 'my/sillyModule.js';
-        const injectWrapper = createTestFunctionForInjector(injectFn("var sillyCode = true;"));
-        expect(console.warn).toHaveBeenCalledWith('Inject Loader: The module you are trying to inject into (`my/sillyModule.js`) does not seem to have any dependencies, are you sure you want to do this?');
-        console = _console;
-      });
-
-      test('throws an error if the user tries to specify an injection that doesnt exist', () => {
-        const someModuleStub = jest.fn(() => true);
-        const injectWrapper = createTestFunctionForInjector(injectFn("require('someModule')('foobar');"));
-        expect(() =>
-          injectWrapper({
-            someModule: someModuleStub,
-            derp: () => { return; }
-          })
-        ).toThrowError(/One or more of the injections you passed in is invalid for the module you are attempting to inject into./);
-      });
+      const injectedCode = inject.call(context, `original source`);
+      expect(InjectorTasks.getModuleDependencies).toHaveBeenCalledWith("original source");
+      expect(InjectorTasks.getModuleDependencies.mock.calls.length).toBe(1);
+      expect(console.warn.mock.calls.length).toBe(1);
+      expect(console.warn).toHaveBeenCalledWith("Inject Loader: The module you are trying to inject into ('mockModule') does not seem to have any dependencies, are you sure you want to do this?");
+      expect(InjectorTasks.replaceDependencies).toHaveBeenCalledWith("original source");
+      expect(InjectorTasks.injectIntoWrapper).toHaveBeenCalledWith([], "source with replaced dependencies");
+      expect(injectedCode).toEqual("final source");
     });
   });
 });
