@@ -1,9 +1,0 @@
-#!/bin/bash -e
-
-pushd example/webpack1-babel
-yarn && karma start
-popd
-
-pushd example/webpack2-babel
-yarn && karma start
-popd

@@ -5,7 +5,11 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "babel -d dist src",
-    "test": "flow && jest && ./script/integration_test",
+    "test": "yarn test:unit && yarn test:integration",
+    "test:unit": "flow && jest",
+    "test:integration": "yarn test:integration:install && yarn test:integration:run",
+    "test:integration:install": "cd example/webpack1-babel && yarn && cd ../webpack2-babel && yarn",
+    "test:integration:run": "cd ./example/webpack1-babel && yarn test && cd ../webpack2-babel && yarn test",
     "prepublish": "npm run build"
   },
   "files": [
