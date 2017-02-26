@@ -20,7 +20,7 @@ describe('InjectorTasks', () => {
       expect(getModuleDependencies(source)).toEqual(["lib/FirstOnLine", "lib/SecondOnLine"])
     });
     test('returning dependencies with properties', () => {
-      const source = `var WithProperty = require('WithProperty');`
+      const source = `var WithProperty = require('WithProperty').Property;`
       expect(getModuleDependencies(source)).toEqual(["WithProperty"])
     });
     test('returning dependencies directly after an equals sign', () => {
@@ -78,6 +78,10 @@ var Baz =Foo.require("Baz");
 var Foo=(__injection("Foo") || require("Foo"));
 var Baz =Foo.require("Baz");
 `);
+    });
+    test('require a dependency with a property injects correctly', () => {
+      const source = `var Foo = require("Foo").Property;`;
+      expect(replaceDependencies(source)).toEqual(`var Foo = (__injection("Foo") || require("Foo")).Property;`);
     });
     test('multiple requires on the same line', () => {
       const source = `var Foo=require("Foo"), Baz =Foo.require("Baz"); var Bar = require("Bar");`;
