@@ -1,5 +1,4 @@
 node_modules
-yarn.lock
 flow-typed
 
 .DS_Store
