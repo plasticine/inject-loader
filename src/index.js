@@ -14,7 +14,10 @@ type WebpackContext = {
 };
 
 function __createInjectorFunction({query, resourcePath}: WebpackContext, source: string) {
+function __createInjectorFunction(context: WebpackContext, source: string) {
   // const query = loaderUtils.parseQuery(querystring);
+  const query = context.query
+  const resourcePath = context.resourcePath
   const requireStringRegex = createRequireStringRegex(query);
   const wrappedModuleDependencies = getAllModuleDependencies(source, requireStringRegex);
   const dependencyInjectedSource = source.replace(requireStringRegex, __WRAPPED_MODULE_REPLACEMENT);
