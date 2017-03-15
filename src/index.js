@@ -20,11 +20,13 @@ type Validate =
   | false
 
 type LoaderOptions = {
-  validate?: Validate
+  validate?: Validate,
+  exportInjected?: boolean
 }
 
 const defaultOptions: LoaderOptions = {
-  validate: "error"
+  validate: "error",
+  exportInjected: false
 }
 
 function __createInjectorFunction(context: WebpackContext, source: string) {
@@ -48,6 +50,12 @@ function __createInjectorFunction(context: WebpackContext, source: string) {
 
     // $FlowIgnore
     const __wrappedModuleDependencies: Array<string> = $__WRAPPED_MODULE_DEPENDENCIES__;
+
+    let __injected__: any
+
+    if (options.exportInjected) {
+      __injected__ = {}
+    }
 
     if (options.validate) {
       (function __validateInjection() {
@@ -73,7 +81,11 @@ function __createInjectorFunction(context: WebpackContext, source: string) {
     }
 
     function __injection(dependency: string): ?any {
-      return (__injections.hasOwnProperty(dependency) ? __injections[dependency] : null);
+      if (__injections.hasOwnProperty(dependency)) {
+        if (options.exportInjected) __injected__[dependency] = __injections[dependency]
+        return __injections[dependency]
+      }
+      return null
     }
 
     /*!************************************************************************/
@@ -82,6 +94,15 @@ function __createInjectorFunction(context: WebpackContext, source: string) {
       $__INJECTED_SOURCE__;
     })();
     /*!************************************************************************/
+
+    console.log('accessible?', options.exportInjected)
+    if (options.exportInjected) {
+      if (module.exports.__esModule) {
+        module.exports.default.__injected__ = __injected__
+      } else {
+        module.exports.__injected__ = __injected__
+      }
+    }
 
     return module.exports;
   }
