@@ -43,7 +43,8 @@ describe('inject-loader', function() {
     context = {
       query: '',
       resourcePath: '',
-      cacheable: () => true
+      cacheable: () => true,
+      options: {}
     }
     injectFn = inject.bind(context)
   })
