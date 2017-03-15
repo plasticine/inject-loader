@@ -29,14 +29,12 @@ const defaultOptions: LoaderOptions = {
   exportInjected: false
 }
 
-function __createInjectorFunction(context: WebpackContext, source: string) {
+function __createInjectorFunction({ query, resourcePath }: WebpackContext, source: string, configOptions: LoaderOptions) {
   // const query = loaderUtils.parseQuery(querystring);
-  const query = context.query
-  const resourcePath = context.resourcePath
   const requireStringRegex = createRequireStringRegex(query);
   const wrappedModuleDependencies = getAllModuleDependencies(source, requireStringRegex);
   const dependencyInjectedSource = source.replace(requireStringRegex, __WRAPPED_MODULE_REPLACEMENT);
-  const options: LoaderOptions = Object.assign({}, defaultOptions, loaderUtils.getLoaderConfig(context, 'injectLoader'))
+  const options: LoaderOptions = Object.assign({}, defaultOptions, configOptions)
 
   if (wrappedModuleDependencies.length === 0)
     console.warn(`Inject Loader: The module you are trying to inject into (\`${resourcePath}\`) does not seem to have any dependencies, are you sure you want to do this?`);
@@ -116,5 +114,6 @@ function __createInjectorFunction(context: WebpackContext, source: string) {
 
 module.exports = function inject(source: string): string {
   this.cacheable && this.cacheable();
-  return __createInjectorFunction(this, source);
+  const configOptions: LoaderOptions = loaderUtils.getLoaderConfig(this, 'injectLoader')
+  return __createInjectorFunction(this, source, configOptions);
 }
