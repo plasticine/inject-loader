@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 pushd example/webpack1-babel
-yarn && karma start
+yarn && node_modules/.bin/karma start
 popd
 
 pushd example/webpack2-babel
-yarn && karma start
+yarn && node_modules/.bin/karma start
 popd
