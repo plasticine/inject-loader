@@ -10,7 +10,7 @@ const MODULE_A_STUB = {
 
 const MODULE_B_STUB = () => 'b - stubbed';
 
-describe('injectify-loader', () => {
+describe('inject-loader', () => {
   const injectors = [
         { moduleType: 'commonjs', moduleInjector: require('self!./modules/commonjs.js') },
         { moduleType: 'amd', moduleInjector: require('self!./modules/amd.js') },
