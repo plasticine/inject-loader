@@ -7,6 +7,7 @@ module.exports = {
     'import/extensions': 'off',
   },
   env: {
-     mocha: true
+     mocha: true,
+     jasmine: true
   },
 };

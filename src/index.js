@@ -7,4 +7,4 @@ export default function injectifyLoader(source, inputSourceMap) {
 
   const { code, map } = injectify(this, source, inputSourceMap);
   this.callback(null, code, map);
-};
+}

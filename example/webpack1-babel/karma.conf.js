@@ -1,4 +1,4 @@
-var webpackConfig = require('./webpack.conf.js');
+const webpackConfig = require('./webpack.conf.js');
 
 module.exports = function karmaConfig(config) {
   config.set({
@@ -6,7 +6,7 @@ module.exports = function karmaConfig(config) {
     frameworks: ['jasmine'],
 
     files: [
-      {pattern: 'test/*_test.js', watched: false},
+      { pattern: 'test/*_test.js', watched: false },
     ],
 
     preprocessors: {
@@ -21,6 +21,6 @@ module.exports = function karmaConfig(config) {
     browsers: ['PhantomJS'],
     singleRun: true,
     concurrency: Infinity,
-    webpack: webpackConfig
+    webpack: webpackConfig,
   });
-}
+};
