@@ -3,7 +3,7 @@ const webpackBlocks = require('@webpack-blocks/webpack2');
 
 const shared = require('./shared.js');
 
-const NODE_EXTERNAL_DEPS = ['babylon', 'babel-generator', 'babel-traverse', 'babel-types', 'babel-template'];
+const NODE_EXTERNAL_DEPS = ['babel-core'];
 
 const excludeNodeDepsFromCompilation = () => () => ({
   externals: NODE_EXTERNAL_DEPS.map(dep => ({

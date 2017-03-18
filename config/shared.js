@@ -30,6 +30,7 @@ const nodeTarget = () => () => ({
 });
 
 const baseConfig = () => webpackBlocks.group([
+  webpackBlocks.sourceMaps(),
   babelLoader(),
   nodeTarget(),
 ]);
