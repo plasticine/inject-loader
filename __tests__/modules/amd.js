@@ -10,5 +10,9 @@ define((require) => { // eslint-disable-line no-undef
     getB() {
       return b();
     },
+
+    callRequireMethod() {
+      return a.require();
+    },
   };
 });

@@ -55,6 +55,12 @@ describe('injectify-loader', () => {
 
         assert.throws(injectInvalidDependencies, /The following injections are invalid:\n- \.\/c\.js/);
       });
+
+      it('does not break someObject.require calls', () => {
+        const module = injector.moduleInjector();
+
+        assert.equal(module.callRequireMethod(), 'require method in a.js');
+      });
     });
   });
 });

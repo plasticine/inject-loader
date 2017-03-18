@@ -9,4 +9,8 @@ module.exports = {
   getB() {
     return b();
   },
+
+  callRequireMethod() {
+    return a.require();
+  },
 };
