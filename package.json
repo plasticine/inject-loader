@@ -1,13 +1,14 @@
 {
   "name": "inject-loader",
   "version": "3.0.0-beta4",
-  "description": "A Webpack loader for injecting code into modules via their dependancies",
+  "description": "A Webpack loader for injecting code into modules via their dependencies",
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack --config config/webpack.config.js",
     "build-prod": "webpack --config config/webpack.config.js -p",
     "build-test": "webpack --config config/webpack.test.config.js",
     "eslint": "eslint {src,config,__tests__}/**",
+    "pretest": "yarn run build-test",
     "test": "mocha tmp/testBundle.js --require source-map-support/register"
   },
   "files": [
