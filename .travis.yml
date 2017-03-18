@@ -1,12 +1,14 @@
-sudo: false
-before_install:
-  - curl -o- -L https://yarnpkg.com/install.sh | bash
-  - export PATH=$HOME/.yarn/bin:$PATH
 language: node_js
-cache: yarn
 node_js:
-  - "node"
-  - "6"
-  - "5"
+  - 7
+  - 6
+  - 5
+  - 4
+
+cache: yarn
+
 script:
-- npm test
+  - make lint
+  - make test
+  - make build-release
+  - make integration-test
