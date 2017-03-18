@@ -1,6 +1,6 @@
 import injectify from './injectify.js';
 
-module.exports = function injectifyLoader(source, inputSourceMap) {
+export default function injectifyLoader(source, inputSourceMap) {
   if (this.cacheable) {
     this.cacheable();
   }
