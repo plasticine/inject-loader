@@ -8,7 +8,6 @@
     "build-prod": "webpack --config config/webpack.config.js -p",
     "build-test": "webpack --config config/webpack.test.config.js",
     "eslint": "eslint {src,config,__tests__}/** example/*/{src,test}",
-    "pretest": "yarn run build-test",
     "test": "mocha tmp/testBundle.js --require source-map-support/register",
     "integration_test": "./script/integration_test"
   },
