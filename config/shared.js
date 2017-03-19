@@ -19,6 +19,7 @@ const babelLoader = () => () => ({
         query: {
           cacheDirectory: true,
           presets: ['es2015'],
+          plugins: ['add-module-exports'],
         },
       },
     ],
