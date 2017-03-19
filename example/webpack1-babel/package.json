@@ -1,14 +1,9 @@
 {
-  "name": "inject-loader-webpack1-babel",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "private": true,
   "scripts": {
     "test": "karma start",
     "build": "webpack --config webpack.conf.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
