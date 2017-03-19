@@ -27,7 +27,9 @@ validate_semver $next_version
 
 next_ref="v$next_version"
 
-npm test
+make lint
+make test
+make build-release
 
 update_version 'package.json' $next_version
 
@@ -41,7 +43,5 @@ git tag latest -f
 
 git push origin $next_ref
 git push origin latest -f
-
-npm run build
 
 npm publish

@@ -12,7 +12,7 @@ This is particularly useful for writing tests where mocking things inside your m
 
 [Documentation: Using loaders](http://webpack.github.io/docs/using-loaders.html)
 
-Use the inject loader by adding `inject!` when you use `require`, this will return a function that can be passed things to inject.
+Use the inject loader by adding `inject-loader!` when you use `require`, this will return a function that can be passed things to inject.
 
 By default all `require` statements in an injected module will be altered to be replaced with an injector, though if a replacement it not specified the default will be used.
 
@@ -35,7 +35,7 @@ You can manipulate it’s dependencies when you come to write tests as follows:
 ```javascript
 // If no flags are provided when using the loader then
 // all require statements will be wrapped in an injector
-MyModuleInjector = require('inject!MyStore')
+MyModuleInjector = require('inject-loader!MyStore')
 MyModule = MyModuleInjector({
   'lib/dispatcher': DispatcherMock,
   'events': EventsMock,
