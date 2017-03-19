@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
 pushd example/webpack1-babel
-yarn && npm i ../.. && npm run test
+yarn && yarn run test
 popd
 
 pushd example/webpack2-babel
-yarn && npm i ../.. && npm run test
+yarn && yarn run test
 popd

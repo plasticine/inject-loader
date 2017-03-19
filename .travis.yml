@@ -10,5 +10,5 @@ cache: yarn
 script:
   - make lint
   - make test
-  - make build-release
+  - make build
   - make integration-test

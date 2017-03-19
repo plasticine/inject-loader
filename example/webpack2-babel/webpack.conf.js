@@ -36,4 +36,8 @@ module.exports = {
       path.resolve(__dirname, './test'),
     ],
   },
+
+  resolveLoader: {
+    modules: ['node_modules', '../../'],
+  },
 };
