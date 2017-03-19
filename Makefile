@@ -1,16 +1,16 @@
 lint:
-	npm run eslint
+	yarn run eslint
 
 test:
-	npm run build
-	npm run build-test
-	npm run test
+	yarn run build
+	yarn run build-test
+	yarn run test
 
 integration-test:
 	./script/integration_test
 
 build-release:
-	npm run build-prod
+	yarn run build-prod
 	mkdir -p ./dist
 	cp -f ./tmp/index.js ./dist/index.js
 	cp -f ./tmp/index.js.map ./dist/index.js.map
