@@ -12,7 +12,12 @@ function processRequireCall(path) {
 }
 
 export default function injectify(context, source, inputSourceMap) {
-  const { ast } = transform(source);
+  const { ast } = transform(source, {
+    babelrc: false,
+    code: false,
+    compact: false,
+    filename: context.resourcePath,
+  });
 
   const dependencies = [];
   traverse(ast, {
@@ -40,5 +45,8 @@ export default function injectify(context, source, inputSourceMap) {
     sourceMaps: context.sourceMap,
     sourceFileName: context.resourcePath,
     inputSourceMap,
+    babelrc: false,
+    compact: false,
+    filename: context.resourcePath,
   });
 }
