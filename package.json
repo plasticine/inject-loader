@@ -33,10 +33,10 @@
     "eslint-plugin-import": "^2.2.0",
     "mocha": "^3.2.0",
     "source-map-support": "^0.4.14",
-    "webpack": "^2.2.1"
+    "webpack": "^3.0.0"
   },
   "peerDependencies": {
-    "webpack": "^1 || ^2"
+    "webpack": "^1 || ^2 || ^3"
   },
   "keywords": [
     "webpack",
