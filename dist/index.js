@@ -7,9 +7,9 @@ module.exports =
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -33,9 +33,6 @@ module.exports =
 /******/
 /******/ 	// expose the module cache
 /******/ 	__webpack_require__.c = installedModules;
-/******/
-/******/ 	// identity function for calling harmony imports with the correct context
-/******/ 	__webpack_require__.i = function(value) { return value; };
 /******/
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
@@ -64,7 +61,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -77,6 +74,13 @@ module.exports = require("babel-core");
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+module.exports = __webpack_require__(2);
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 
 
@@ -85,7 +89,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = injectifyLoader;
 
-var _injectify2 = __webpack_require__(2);
+var _injectify2 = __webpack_require__(3);
 
 var _injectify3 = _interopRequireDefault(_injectify2);
 
@@ -105,7 +109,7 @@ function injectifyLoader(source, inputSourceMap) {
 module.exports = exports['default'];
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -118,7 +122,7 @@ exports.default = injectify;
 
 var _babelCore = __webpack_require__(0);
 
-var _wrapper_template = __webpack_require__(3);
+var _wrapper_template = __webpack_require__(4);
 
 var _wrapper_template2 = _interopRequireDefault(_wrapper_template);
 
@@ -132,7 +136,12 @@ function processRequireCall(path) {
 }
 
 function injectify(context, source, inputSourceMap) {
-  var _transform = (0, _babelCore.transform)(source),
+  var _transform = (0, _babelCore.transform)(source, {
+    babelrc: false,
+    code: false,
+    compact: false,
+    filename: context.resourcePath
+  }),
       ast = _transform.ast;
 
   var dependencies = [];
@@ -157,13 +166,16 @@ function injectify(context, source, inputSourceMap) {
   return (0, _babelCore.transformFromAst)(wrapperModuleAst, source, {
     sourceMaps: context.sourceMap,
     sourceFileName: context.resourcePath,
-    inputSourceMap: inputSourceMap
+    inputSourceMap: inputSourceMap,
+    babelrc: false,
+    compact: false,
+    filename: context.resourcePath
   });
 }
 module.exports = exports['default'];
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -177,13 +189,6 @@ var _babelCore = __webpack_require__(0);
 
 exports.default = (0, _babelCore.template)('\n  module.exports = function __injector(__injections) {\n    __injections = __injections || {};\n\n    (function __validateInjection() {\n      var validDependencies = DEPENDENCIES;\n      var injectedDependencies = Object.keys(__injections);\n      var invalidInjectedDependencies = injectedDependencies.filter(function (dependency) {\n        return validDependencies.indexOf(dependency) === -1;\n      });\n\n      if (invalidInjectedDependencies.length > 0) {\n        var validDependenciesString = \'- \' + validDependencies.join(\'\\n- \');\n        var injectedDependenciesString = \'- \' + injectedDependencies.join(\'\\n- \');\n        var invalidDependenciesString = \'- \' + invalidInjectedDependencies.join(\'\\n- \');\n\n        throw new Error(\'Some of the injections you passed in are invalid.\\n\' +\n          \'Valid injection targets for this module are:\\n\' + validDependenciesString + \'\\n\' +\n          \'The following injections were passed in:\\n\' + injectedDependenciesString + \'\\n\' +\n          \'The following injections are invalid:\\n\' + invalidDependenciesString + \'\\n\'\n        );\n      }\n    })();\n\n    var module = { exports: {} };\n    var exports = module.exports;\n\n    function __getInjection(dependency) {\n      return __injections.hasOwnProperty(dependency) ? __injections[dependency] : null;\n    }\n\n    (function () {\n      SOURCE\n    })();\n\n    return module.exports;\n  }\n');
 module.exports = exports['default'];
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(1);
-
 
 /***/ })
 /******/ ]);
