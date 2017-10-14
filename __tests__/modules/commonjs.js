@@ -1,5 +1,6 @@
 const a = require('./a.js');
 const b = require('./b.js');
+const c = require('./c.js');
 
 module.exports = {
   getA() {
@@ -8,6 +9,10 @@ module.exports = {
 
   getB() {
     return b();
+  },
+
+  getC() {
+    return c;
   },
 
   callRequireMethod() {

@@ -3,9 +3,27 @@ import wrapperTemplate from './wrapper_template.js';
 
 function processRequireCall(path) {
   const dependencyString = path.node.arguments[0].value;
-  path.replaceWith(t.logicalExpression('||',
-    t.CallExpression(t.identifier('__getInjection'), [t.stringLiteral(dependencyString)]),
-    path.node),
+  path.replaceWith(
+    t.expressionStatement(
+      t.conditionalExpression(
+        t.callExpression(
+          t.memberExpression(
+            t.identifier('__injections'),
+            t.identifier('hasOwnProperty'),
+            false,
+          ),
+          [
+            t.stringLiteral(dependencyString),
+          ],
+        ),
+        t.memberExpression(
+          t.identifier('__injections'),
+          t.stringLiteral(dependencyString),
+          true,
+        ),
+        path.node,
+      ),
+    ),
   );
 
   return dependencyString;
