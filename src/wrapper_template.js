@@ -16,7 +16,10 @@ export default template(`
         var injectedDependenciesString = '- ' + injectedDependencies.join('\\n- ');
         var invalidDependenciesString = '- ' + invalidInjectedDependencies.join('\\n- ');
 
+        var context = SOURCE_CONTEXT;
+
         throw new Error('Some of the injections you passed in are invalid.\\n' +
+          'Module is ' + context.filename + '\\n' +
           'Valid injection targets for this module are:\\n' + validDependenciesString + '\\n' +
           'The following injections were passed in:\\n' + injectedDependenciesString + '\\n' +
           'The following injections are invalid:\\n' + invalidDependenciesString + '\\n'
