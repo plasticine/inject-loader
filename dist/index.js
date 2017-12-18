@@ -161,7 +161,7 @@ function injectify(context, source, inputSourceMap) {
   var dependenciesArrayAst = _babelCore.types.arrayExpression(dependencies.map(function (dependency) {
     return _babelCore.types.stringLiteral(dependency);
   }));
-  var wrapperModuleAst = _babelCore.types.file(_babelCore.types.program([(0, _wrapper_template2.default)({ SOURCE: ast, DEPENDENCIES: dependenciesArrayAst, SOURCE_PATH: context.resourcePath })]));
+  var wrapperModuleAst = _babelCore.types.file(_babelCore.types.program([(0, _wrapper_template2.default)({ SOURCE: ast, DEPENDENCIES: dependenciesArrayAst, SOURCE_PATH: _babelCore.types.stringLiteral(context.resourcePath) })]));
 
   return (0, _babelCore.transformFromAst)(wrapperModuleAst, source, {
     sourceMaps: context.sourceMap,
