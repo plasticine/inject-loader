@@ -24,6 +24,7 @@ describe('inject-loader', () => {
 
         assert.equal(module.getA(), 'a - original');
         assert.equal(module.getB(), 'b - original');
+        assert.equal(module.getC(), 'c - original');
       });
 
       it('works when one injection was provided', () => {
@@ -33,6 +34,17 @@ describe('inject-loader', () => {
 
         assert.equal(module.getA(), 'a - stubbed');
         assert.equal(module.getB(), 'b - original');
+        assert.equal(module.getC(), 'c - original');
+      });
+
+      it('works when a falsey injection was provided', () => {
+        const module = injector.moduleInjector({
+          './c.js': undefined,
+        });
+
+        assert.equal(module.getA(), 'a - original');
+        assert.equal(module.getB(), 'b - original');
+        assert.equal(module.getC(), undefined);
       });
 
       it('works when multiple injections were provided', () => {
@@ -43,17 +55,18 @@ describe('inject-loader', () => {
 
         assert.equal(module.getA(), 'a - stubbed');
         assert.equal(module.getB(), 'b - stubbed');
+        assert.equal(module.getC(), 'c - original');
       });
 
       it('throws an error when invalid dependencies are provided', () => {
         const injectInvalidDependencies = () => {
           injector.moduleInjector({
             './b.js': null,
-            './c.js': null,
+            './d.js': null,
           });
         };
 
-        assert.throws(injectInvalidDependencies, /The following injections are invalid:\n- \.\/c\.js/);
+        assert.throws(injectInvalidDependencies, /The following injections are invalid:\n- \.\/d\.js/);
       });
 
       it('does not break someObject.require calls', () => {

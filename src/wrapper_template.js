@@ -27,10 +27,6 @@ export default template(`
     var module = { exports: {} };
     var exports = module.exports;
 
-    function __getInjection(dependency) {
-      return __injections.hasOwnProperty(dependency) ? __injections[dependency] : null;
-    }
-
     (function () {
       SOURCE
     })();
