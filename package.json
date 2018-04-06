@@ -31,6 +31,8 @@
     "eslint": "^3.17.1",
     "eslint-config-airbnb-base": "^11.1.1",
     "eslint-plugin-import": "^2.2.0",
+    "flow": "^0.2.3",
+    "jest": "^22.4.3",
     "mocha": "^3.2.0",
     "source-map-support": "^0.4.14",
     "webpack": "^3.0.0"

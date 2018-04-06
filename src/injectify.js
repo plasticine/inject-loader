@@ -1,3 +1,5 @@
+// @flow
+
 import { transform, traverse, types as t, transformFromAst } from 'babel-core';
 import wrapperTemplate from './wrapper_template.js';
 

@@ -1,3 +1,5 @@
+// @flow
+
 import injectify from './injectify.js';
 
 export default function injectifyLoader(source, inputSourceMap) {

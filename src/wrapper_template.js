@@ -1,3 +1,5 @@
+// @flow
+
 import { template } from 'babel-core';
 
 export default template(`
