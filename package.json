@@ -9,7 +9,7 @@
     "pretest:unit": "yarn build && yarn build:test",
     "test:unit": "mocha tmp/testBundle.js --require source-map-support/register",
     "test:integration": "./script/integration_test",
-    "test": "yarn test:unit && yarn test:integration",
+    "test": "flow && yarn test:unit && yarn test:integration",
     "precommit": "pretty-quick --staged"
   },
   "files": [
