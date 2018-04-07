@@ -1,23 +1,31 @@
 const path = require('path');
-const webpackBlocks = require('@webpack-blocks/webpack2');
+const constants = require('./shared');
 
-const shared = require('./shared.js');
-
-const NODE_EXTERNAL_DEPS = ['babel-core'];
-
-const excludeNodeDepsFromCompilation = () => () => ({
-  externals: NODE_EXTERNAL_DEPS.map(dep => ({
+module.exports = {
+  entry: path.resolve(constants.SOURCE_PATH, 'index.js'),
+  target: 'node',
+  mode: 'production',
+  output: {
+    path: constants.TEMP_PATH,
+    filename: 'index.js',
+    library: 'InjectLoader',
+    libraryTarget: 'commonjs-module',
+  },
+  externals: constants.NODE_EXTERNAL_DEPS.map(dep => ({
     [dep]: `commonjs ${dep}`,
   })),
-});
-
-module.exports = webpackBlocks.createConfig.vanilla([
-  webpackBlocks.entryPoint(path.resolve(shared.SOURCE_PATH, 'index.js')),
-  webpackBlocks.setOutput({
-    path: shared.TEMP_PATH,
-    filename: 'index.js',
-    libraryTarget: 'commonjs-module',
-  }),
-  shared.baseConfig(),
-  excludeNodeDepsFromCompilation(),
-]);
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        include: [constants.SOURCE_PATH, constants.TESTS_PATH],
+        query: {
+          cacheDirectory: true,
+          presets: ['es2015'],
+          plugins: ['add-module-exports', 'transform-flow-strip-types'],
+        },
+      },
+    ],
+  },
+};

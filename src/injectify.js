@@ -1,4 +1,6 @@
-import { transform, traverse, types as t, transformFromAst } from 'babel-core';
+// @flow
+
+import {transform, traverse, types as t, transformFromAst} from 'babel-core';
 import wrapperTemplate from './wrapper_template.js';
 
 function processRequireCall(path) {
@@ -7,30 +9,20 @@ function processRequireCall(path) {
     t.expressionStatement(
       t.conditionalExpression(
         t.callExpression(
-          t.memberExpression(
-            t.identifier('__injections'),
-            t.identifier('hasOwnProperty'),
-            false,
-          ),
-          [
-            t.stringLiteral(dependencyString),
-          ],
+          t.memberExpression(t.identifier('__injections'), t.identifier('hasOwnProperty'), false),
+          [t.stringLiteral(dependencyString)]
         ),
-        t.memberExpression(
-          t.identifier('__injections'),
-          t.stringLiteral(dependencyString),
-          true,
-        ),
-        path.node,
-      ),
-    ),
+        t.memberExpression(t.identifier('__injections'), t.stringLiteral(dependencyString), true),
+        path.node
+      )
+    )
   );
 
   return dependencyString;
 }
 
-export default function injectify(context, source, inputSourceMap) {
-  const { ast } = transform(source, {
+export default function injectify(context: Object, source: string, inputSourceMap: string) {
+  const {ast} = transform(source, {
     babelrc: false,
     code: false,
     compact: false,
@@ -40,7 +32,7 @@ export default function injectify(context, source, inputSourceMap) {
   const dependencies = [];
   traverse(ast, {
     CallExpression(path) {
-      if (t.isIdentifier(path.node.callee, { name: 'require' })) {
+      if (t.isIdentifier(path.node.callee, {name: 'require'})) {
         dependencies.push(processRequireCall(path));
         path.skip();
       }
@@ -48,16 +40,18 @@ export default function injectify(context, source, inputSourceMap) {
   });
 
   if (dependencies.length === 0) {
-    context.emitWarning('The module you are trying to inject into doesn\'t have any dependencies. ' +
-      'Are you sure you want to do this?');
+    context.emitWarning(
+      "The module you are trying to inject into doesn't have any dependencies. " +
+        'Are you sure you want to do this?'
+    );
   }
 
   const dependenciesArrayAst = t.arrayExpression(
-    dependencies.map(dependency => t.stringLiteral(dependency)),
+    dependencies.map(dependency => t.stringLiteral(dependency))
   );
-  const wrapperModuleAst = t.file(t.program([
-    wrapperTemplate({ SOURCE: ast, DEPENDENCIES: dependenciesArrayAst }),
-  ]));
+  const wrapperModuleAst = t.file(
+    t.program([wrapperTemplate({SOURCE: ast, DEPENDENCIES: dependenciesArrayAst})])
+  );
 
   return transformFromAst(wrapperModuleAst, source, {
     sourceMaps: context.sourceMap,

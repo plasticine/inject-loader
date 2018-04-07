@@ -1,4 +1,6 @@
-import { template } from 'babel-core';
+// @flow
+
+import {template} from 'babel-core';
 
 export default template(`
   module.exports = function __injector(__injections) {
