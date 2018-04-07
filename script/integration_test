@@ -1,9 +1,7 @@
 #!/bin/bash -e
 
-pushd example/webpack1-babel
-yarn && yarn run test
-popd
-
-pushd example/webpack2-babel
-yarn && yarn run test
-popd
+for example in example/* ; do
+  pushd "$example"
+  yarn && yarn run test
+  popd
+done

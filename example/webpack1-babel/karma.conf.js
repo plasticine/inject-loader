@@ -5,14 +5,14 @@ module.exports = function karmaConfig(config) {
     basePath: '',
     frameworks: ['jasmine'],
 
-    files: [
-      { pattern: 'test/*_test.js', watched: false },
-    ],
+    files: [{pattern: 'test/*_test.js', watched: false}],
 
     preprocessors: {
       'test/*_test.js': ['webpack'],
     },
-
+    client: {
+      clearContext: false,
+    },
     reporters: ['progress'],
     port: 9876,
     colors: true,
