@@ -21,7 +21,7 @@ function processRequireCall(path) {
   return dependencyString;
 }
 
-export default function injectify(context, source, inputSourceMap) {
+export default function injectify(context: Object, source: string, inputSourceMap: string) {
   const {ast} = transform(source, {
     babelrc: false,
     code: false,
