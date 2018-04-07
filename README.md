@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>💉👾<br><code>inject-loader</code></h1>
+  <h1>💉📦<br>inject-loader</h1>
   <h3>A Webpack loader for injecting code into modules via their dependencies</h3>
   <a href="https://travis-ci.org/plasticine/inject-loader"><img src="https://img.shields.io/travis/plasticine/inject-loader/master.svg?style=flat-square" alt="build status" /></a> <a href="https://gemnasium.com/plasticine/inject-loader"><img src="https://img.shields.io/gemnasium/plasticine/inject-loader.svg?style=flat-square" alt="Gemnasium" /></a> <a href="https://www.npmjs.com/package/inject-loader"><img src="https://img.shields.io/npm/v/inject-loader.svg?style=flat-square" alt="npm version" /></a> <a href="https://www.npmjs.com/package/inject-loader"><img src="https://img.shields.io/npm/dm/inject-loader.svg?style=flat-square" alt="npm downloads" /></a>
 </div>
@@ -16,9 +16,9 @@ This is particularly useful for writing tests where mocking things inside your m
 
 [Documentation: Using loaders](http://webpack.github.io/docs/using-loaders.html)
 
-Use the inject loader by adding `inject-loader!` when you use `require`, this will return a function that can be passed things to inject.
+Use the inject loader by adding the `inject-loader!` [inline loader](https://webpack.js.org/concepts/loaders/#inline) when you use `require`, this will return a function that can used in test code to modify the injected module.
 
-By default all `require` statements in an injected module will be altered to be replaced with an injector, though if a replacement it not specified the default will be used.
+By default all `require` statements in an injected module will be altered to be replaced with an injector, though if a replacement it not specified the default values will be used.
 
 ### Examples
 
@@ -47,7 +47,7 @@ MyModule = MyModuleInjector({
 })
 ```
 
-There are a few examples of complete test setups for both Webpack 1 & 2 in the [`example`](./example) folder.
+There are a few examples of complete test setups for both Webpack 1, 2, 3 & 4 in the [`example`](./example) folder.
 
 ## License
 
