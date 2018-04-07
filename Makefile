@@ -1,11 +1,3 @@
-lint:
-	yarn run eslint
-
-test:
-	yarn run build
-	yarn run build-test
-	yarn run test
-
 integration-test:
 	./script/integration_test
 

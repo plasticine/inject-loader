@@ -5,9 +5,7 @@ module.exports = function karmaConfig(config) {
     basePath: '',
     frameworks: ['jasmine'],
 
-    files: [
-      { pattern: 'test/*_test.js', watched: false },
-    ],
+    files: [{pattern: 'test/*_test.js', watched: false}],
 
     preprocessors: {
       'test/*_test.js': ['webpack'],
@@ -18,7 +16,7 @@ module.exports = function karmaConfig(config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['PhantomJS'],
+    browsers: ['jsdom'],
     singleRun: true,
     concurrency: Infinity,
     webpack: webpackConfig,

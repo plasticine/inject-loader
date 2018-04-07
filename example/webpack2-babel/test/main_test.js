@@ -1,5 +1,3 @@
-/* eslint-disable global-require */
-
 describe('Main', () => {
   let mainModule;
 
@@ -17,7 +15,7 @@ describe('Main', () => {
 
     it('allows for injecting code into a subset of dependencies', () => {
       mainModule = mainModuleInjector({
-        bar: { BAR: 5 },
+        bar: {BAR: 5},
       });
       expect(mainModule.getValue()).toEqual(50);
 
@@ -30,7 +28,7 @@ describe('Main', () => {
     it('allows for injecting code mulitple dependencies', () => {
       mainModule = mainModuleInjector({
         getFoo: () => 5,
-        bar: { BAR: 5 },
+        bar: {BAR: 5},
       });
       expect(mainModule.getValue()).toEqual(25);
     });
