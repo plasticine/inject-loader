@@ -1,8 +1,8 @@
-# inject-loader
-
-[![build status](https://img.shields.io/travis/plasticine/inject-loader/master.svg?style=flat-square)](https://travis-ci.org/plasticine/inject-loader) [![Gemnasium](https://img.shields.io/gemnasium/plasticine/inject-loader.svg?style=flat-square)](https://gemnasium.com/plasticine/inject-loader) [![npm version](https://img.shields.io/npm/v/inject-loader.svg?style=flat-square)](https://www.npmjs.com/package/inject-loader) [![npm downloads](https://img.shields.io/npm/dm/inject-loader.svg?style=flat-square)](https://www.npmjs.com/package/inject-loader)
-
-**💉👾 A Webpack loader for injecting code into modules via their dependencies**
+<div align="center">
+  <h1>💉👾<br><code>inject-loader</code></h1>
+  <h3>A Webpack loader for injecting code into modules via their dependencies</h3>
+  <a href="https://travis-ci.org/plasticine/inject-loader"><img src="https://img.shields.io/travis/plasticine/inject-loader/master.svg?style=flat-square" alt="build status" /></a> <a href="https://gemnasium.com/plasticine/inject-loader"><img src="https://img.shields.io/gemnasium/plasticine/inject-loader.svg?style=flat-square" alt="Gemnasium" /></a> <a href="https://www.npmjs.com/package/inject-loader"><img src="https://img.shields.io/npm/v/inject-loader.svg?style=flat-square" alt="npm version" /></a> <a href="https://www.npmjs.com/package/inject-loader"><img src="https://img.shields.io/npm/dm/inject-loader.svg?style=flat-square" alt="npm downloads" /></a>
+</div>
 
 This is particularly useful for writing tests where mocking things inside your module-under-test is sometimes necessary before execution.
 
