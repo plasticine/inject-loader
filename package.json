@@ -6,6 +6,7 @@
   "scripts": {
     "build": "webpack --config config/webpack.config.js",
     "build:test": "webpack --config config/webpack.test.config.js",
+    "build:release": "yarn run build && mkdir -p ./dist && cp -f ./tmp/index.js ./dist/index.js && cp -f ./tmp/index.js.map ./dist/index.js.map",
     "pretest:unit": "yarn build && yarn build:test",
     "test:unit": "mocha tmp/testBundle.js --require source-map-support/register",
     "test:integration": "./script/integration_test",
