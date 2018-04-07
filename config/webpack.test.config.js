@@ -23,7 +23,7 @@ module.exports = {
         query: {
           cacheDirectory: true,
           presets: ['es2015'],
-          plugins: ['add-module-exports'],
+          plugins: ['add-module-exports', 'transform-flow-strip-types'],
         },
       },
     ],
