@@ -1,6 +1,6 @@
 {
   "name": "inject-loader",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "A Webpack loader for injecting code into modules via their dependencies",
   "main": "dist/index.js",
   "scripts": {
