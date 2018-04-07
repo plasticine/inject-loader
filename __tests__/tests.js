@@ -12,12 +12,12 @@ const MODULE_B_STUB = () => 'b - stubbed';
 
 describe('inject-loader', () => {
   const injectors = [
-        { moduleType: 'commonjs', moduleInjector: require('self!./modules/commonjs.js') },
-        { moduleType: 'amd', moduleInjector: require('self!./modules/amd.js') },
-        { moduleType: 'es6', moduleInjector: require('self!./modules/es6.js') },
+    {moduleType: 'commonjs', moduleInjector: require('self!./modules/commonjs.js')},
+    {moduleType: 'amd', moduleInjector: require('self!./modules/amd.js')},
+    {moduleType: 'es6', moduleInjector: require('self!./modules/es6.js')},
   ];
 
-  injectors.forEach((injector) => {
+  injectors.forEach(injector => {
     describe(`${injector.moduleType} modules`, () => {
       it('works when no injections were provided', () => {
         const module = injector.moduleInjector();
@@ -66,7 +66,19 @@ describe('inject-loader', () => {
           });
         };
 
-        assert.throws(injectInvalidDependencies, /The following injections are invalid:\n- \.\/d\.js/);
+        assert.throws(injectInvalidDependencies, /Injection Error in/);
+        assert.throws(
+          injectInvalidDependencies,
+          /The following injections are invalid:\n - \.\/d\.js\n/
+        );
+        assert.throws(
+          injectInvalidDependencies,
+          /The following injections were passed in:\n - \.\/b\.js\n - \.\/d\.js\n/
+        );
+        assert.throws(
+          injectInvalidDependencies,
+          /Valid injection targets for this module are:\n - \.\/a\.js\n - \.\/b\.js\n - \.\/c\.js/
+        );
       });
 
       it('does not break someObject.require calls', () => {

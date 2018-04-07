@@ -14,18 +14,20 @@ export default template(`
       });
 
       if (invalidInjectedDependencies.length > 0) {
-        var validDependenciesString = '- ' + validDependencies.join('\\n- ');
-        var injectedDependenciesString = '- ' + injectedDependencies.join('\\n- ');
-        var invalidDependenciesString = '- ' + invalidInjectedDependencies.join('\\n- ');
+        var validDependenciesString = ' - ' + validDependencies.join('\\n - ');
+        var injectedDependenciesString = ' - ' + injectedDependencies.join('\\n - ');
+        var invalidDependenciesString = ' - ' + invalidInjectedDependencies.join('\\n - ');
 
-        throw new Error('Some of the injections you passed in are invalid.\\n' +
-          'Module is: "' + SOURCE_PATH + '"\\n' +
-          'Valid injection targets for this module are:\\n' + validDependenciesString + '\\n' +
-          'The following injections were passed in:\\n' + injectedDependenciesString + '\\n' +
-          'The following injections are invalid:\\n' + invalidDependenciesString + '\\n'
+        throw new Error('Injection Error in ' + SOURCE_PATH + '\\n\\n' +
+          'The following injections are invalid:\\n' + invalidDependenciesString + '\\n\\n' +
+          'The following injections were passed in:\\n' + injectedDependenciesString + '\\n\\n' +
+          'Valid injection targets for this module are:\\n' + validDependenciesString + '\\n'
         );
       }
     })();
+
+    __injector.sourcePath = SOURCE_PATH;
+    __injector.validDependencies = DEPENDENCIES;
 
     var module = { exports: {} };
     var exports = module.exports;

@@ -51,7 +51,7 @@ export default function injectify(context: Object, source: string, inputSourceMa
       wrapperTemplate({
         SOURCE: ast,
         SOURCE_PATH: t.stringLiteral(context.resourcePath),
-        DEPENDENCIES: t.arrayExpression(dependencies.map(t.stringLiteral)),
+        DEPENDENCIES: t.arrayExpression(dependencies.map(d => t.stringLiteral(d))),
       }),
     ])
   );
