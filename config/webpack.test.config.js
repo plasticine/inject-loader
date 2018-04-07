@@ -1,22 +1,34 @@
 const path = require('path');
-const webpackBlocks = require('@webpack-blocks/webpack2');
+const constants = require('./shared');
 
-const shared = require('./shared.js');
-
-const addSelfToLoaders = () => () => ({
+module.exports = {
+  entry: path.resolve(constants.TESTS_PATH, 'tests.js'),
+  target: 'node',
+  mode: 'production',
+  output: {
+    path: constants.TEMP_PATH,
+    filename: 'testBundle.js',
+  },
   resolveLoader: {
     alias: {
-      self: shared.TEMP_PATH,
+      self: constants.TEMP_PATH,
     },
   },
-});
-
-module.exports = webpackBlocks.createConfig.vanilla([
-  webpackBlocks.entryPoint(path.resolve(shared.TESTS_PATH, 'tests.js')),
-  webpackBlocks.setOutput({
-    path: shared.TEMP_PATH,
-    filename: 'testBundle.js',
-  }),
-  shared.baseConfig(),
-  addSelfToLoaders(),
-]);
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        include: [
+          constants.SOURCE_PATH,
+          constants.TESTS_PATH,
+        ],
+        query: {
+          cacheDirectory: true,
+          presets: ['es2015'],
+          plugins: ['add-module-exports'],
+        },
+      },
+    ],
+  },
+};
