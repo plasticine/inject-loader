@@ -46,11 +46,14 @@ export default function injectify(context: Object, source: string, inputSourceMa
     );
   }
 
-  const dependenciesArrayAst = t.arrayExpression(
-    dependencies.map(dependency => t.stringLiteral(dependency))
-  );
   const wrapperModuleAst = t.file(
-    t.program([wrapperTemplate({SOURCE: ast, DEPENDENCIES: dependenciesArrayAst})])
+    t.program([
+      wrapperTemplate({
+        SOURCE: ast,
+        SOURCE_PATH: t.stringLiteral(context.resourcePath),
+        DEPENDENCIES: t.arrayExpression(dependencies.map(d => t.stringLiteral(d))),
+      }),
+    ])
   );
 
   return transformFromAst(wrapperModuleAst, source, {
