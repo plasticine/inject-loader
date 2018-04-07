@@ -19,10 +19,7 @@ module.exports = {
       {
         test: /\.js$/,
         loader: 'babel-loader',
-        include: [
-          constants.SOURCE_PATH,
-          constants.TESTS_PATH,
-        ],
+        include: [constants.SOURCE_PATH, constants.TESTS_PATH],
         query: {
           cacheDirectory: true,
           presets: ['es2015'],
