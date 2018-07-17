@@ -13,3 +13,5 @@ node_modules/
 .yarn-integrity
 
 tmp/
+
+dist/
