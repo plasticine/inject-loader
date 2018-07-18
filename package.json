@@ -4,11 +4,11 @@
   "description": "A Webpack loader for injecting code into modules via their dependencies",
   "main": "dist/index.js",
   "scripts": {
-    "build:test": "webpack --config config/webpack.test.config.js",
-    "test:unit": "mocha tmp/testBundle.js --require source-map-support/register",
-    "test:integration": "./script/integration_test",
-    "test": "node build/prod-ready && flow && yarn test:unit && yarn test:integration",
-    "build": "yarn test && webpack --config config/webpack.config.js && node build"
+    "build-test": "webpack --config config/webpack.test.config.js",
+    "test-unit": "mocha tmp/testBundle.js --require source-map-support/register",
+    "test-integration": "./script/integration_test",
+    "test": "node build/prod-ready && flow && npm run test-unit && npm run test-integration",
+    "build": "npm run test && webpack --config config/webpack.config.js && node build"
   },
   "files": [
     "*.md",

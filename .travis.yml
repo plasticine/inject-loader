@@ -4,6 +4,6 @@ node_js:
   - 8
   - 7
   - 6
-cache: yarn
+cache: npm
 script:
-  - yarn test
+  - npm run test
