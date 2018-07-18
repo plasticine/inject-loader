@@ -1,6 +1,6 @@
 {
   "name": "@tradingview/inject-loader",
-  "version": "4.0.2",
+  "version": "4.0.4",
   "description": "A Webpack loader for injecting code into modules via their dependencies",
   "main": "dist/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "test-unit": "mocha tmp/testBundle.js --require source-map-support/register",
     "test-integration": "./script/integration_test",
     "test": "node build/prod-ready && flow && npm run test-unit && npm run test-integration",
-    "build": "npm run test && webpack --config config/webpack.config.js && node build"
+    "build": "webpack --config config/webpack.config.js && node build && cp tmp/index.js dist/index.js && node build  && npm run test"
   },
   "files": [
     "*.md",
