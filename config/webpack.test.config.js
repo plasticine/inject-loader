@@ -22,7 +22,7 @@ module.exports = {
         include: [constants.SOURCE_PATH, constants.TESTS_PATH],
         query: {
           cacheDirectory: true,
-          presets: ['es2015'],
+          presets: ['latest'],
           plugins: ['add-module-exports', 'transform-flow-strip-types'],
         },
       },

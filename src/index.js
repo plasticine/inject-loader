@@ -7,6 +7,6 @@ export default function injectifyLoader(source: string, inputSourceMap: string) 
     this.cacheable();
   }
 
-  const {code, map} = injectify(this, source, inputSourceMap);
+  const {code, map} = injectify(this, source, inputSourceMap, this.query || {});
   this.callback(null, code, map);
 }

@@ -21,9 +21,14 @@ function processRequireCall(path) {
   return dependencyString;
 }
 
-export default function injectify(context: Object, source: string, inputSourceMap: string) {
+export default function injectify(
+  context: Object,
+  source: string,
+  inputSourceMap: string,
+  options: Object
+) {
   const {ast} = transform(source, {
-    babelrc: false,
+    babelrc: !!options.babelrc,
     code: false,
     compact: false,
     filename: context.resourcePath,
@@ -60,7 +65,7 @@ export default function injectify(context: Object, source: string, inputSourceMa
     sourceMaps: context.sourceMap,
     sourceFileName: context.resourcePath,
     inputSourceMap,
-    babelrc: false,
+    babelrc: !!options.babelrc,
     compact: false,
     filename: context.resourcePath,
   });

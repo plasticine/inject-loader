@@ -2,6 +2,6 @@
 
 for example in example/* ; do
   pushd "$example"
-  yarn && yarn run test
+  npm run test
   popd
 done
