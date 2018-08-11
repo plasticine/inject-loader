@@ -1,6 +1,6 @@
 <div align="center">
-  <h1>💉📦<br><code>inject-loader</code></h1>
-  <h3>A Webpack loader for injecting code into modules via their dependencies</h3>
+  <h3>💉📦<br><code>inject-loader</code></h3>
+  <h4>A Webpack loader for injecting code into modules via their dependencies</h4>
   <a href="https://travis-ci.org/plasticine/inject-loader"><img src="https://img.shields.io/travis/plasticine/inject-loader/master.svg?style=flat-square" alt="build status" /></a> <a href="https://gemnasium.com/plasticine/inject-loader"><img src="https://img.shields.io/gemnasium/plasticine/inject-loader.svg?style=flat-square" alt="Gemnasium" /></a> <a href="https://www.npmjs.com/package/inject-loader"><img src="https://img.shields.io/npm/v/inject-loader.svg?style=flat-square" alt="npm version" /></a> <a href="https://www.npmjs.com/package/inject-loader"><img src="https://img.shields.io/npm/dm/inject-loader.svg?style=flat-square" alt="npm downloads" /></a>
 </div>
 
