@@ -18,13 +18,11 @@ module.exports = {
     main: './test/main_test',
   },
 
-  plugins: [
-    new webpack.DefinePlugin({ __VALUEA__: 10 }),
-  ],
+  plugins: [new webpack.DefinePlugin({__VALUEA__: 10})],
 
   output: {
     path: path.resolve(__dirname, './dest'),
-    filename: 'bundle.js',
+    filename: '[name].js',
   },
 
   resolve: {

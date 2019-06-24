@@ -37,8 +37,8 @@
     "prettier": "^1.11.1",
     "pretty-quick": "^1.4.1",
     "source-map-support": "^0.5.4",
-    "webpack": "^4.5.0",
-    "webpack-cli": "^2.0.14"
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.5"
   },
   "peerDependencies": {
     "webpack": "^1 || ^2 || ^3 || ^4"
