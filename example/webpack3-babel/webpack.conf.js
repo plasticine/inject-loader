@@ -22,7 +22,7 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, './dest'),
-    filename: 'bundle.js',
+    filename: '[name].js',
   },
 
   resolve: {
