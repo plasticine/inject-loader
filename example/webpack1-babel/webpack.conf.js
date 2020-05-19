@@ -32,6 +32,8 @@ module.exports = {
   },
 
   resolveLoader: {
-    modulesDirectories: ['node_modules', '../../'],
+    alias: {
+      'inject-loader': path.resolve(__dirname, '../../tmp'),
+    },
   },
 };

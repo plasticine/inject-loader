@@ -18,7 +18,11 @@ module.exports = {
     main: './test/main_test',
   },
 
-  plugins: [new webpack.DefinePlugin({__VALUEA__: 10})],
+  plugins: [
+    new webpack.DefinePlugin({
+      __VALUEA__: 10,
+    }),
+  ],
 
   output: {
     path: path.resolve(__dirname, './dest'),
@@ -36,6 +40,8 @@ module.exports = {
   },
 
   resolveLoader: {
-    modules: ['node_modules', '../../'],
+    alias: {
+      'inject-loader': path.resolve(__dirname, '../../tmp'),
+    },
   },
 };
