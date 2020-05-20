@@ -2,18 +2,18 @@ const path = require('path');
 const constants = require('./shared');
 
 module.exports = {
-  entry: path.resolve(constants.SOURCE_PATH, 'index.js'),
+  entry: path.resolve(constants.TESTS_PATH, 'tests.esm.js'),
   target: 'node',
   mode: 'production',
   output: {
     path: constants.TEMP_PATH,
-    filename: 'index.js',
-    library: 'InjectLoader',
-    libraryTarget: 'commonjs-module',
+    filename: 'testBundleESM.js',
   },
-  externals: constants.NODE_EXTERNAL_DEPS.map(dep => ({
-    [dep]: `commonjs ${dep}`,
-  })),
+  resolveLoader: {
+    alias: {
+      self: constants.TEMP_PATH,
+    },
+  },
   module: {
     rules: [
       {
@@ -26,9 +26,7 @@ module.exports = {
             [
               '@babel/preset-env',
               {
-                targets: {
-                  node: '6',
-                },
+                modules: false,
               },
             ],
           ],

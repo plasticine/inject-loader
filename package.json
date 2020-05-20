@@ -6,9 +6,10 @@
   "scripts": {
     "build": "webpack --config config/webpack.config.js",
     "build:test": "webpack --config config/webpack.test.config.js",
+    "build:test:esm": "webpack --config config/webpack.test.esm.config.js",
     "build:release": "yarn run build && mkdir -p ./dist && cp -f ./tmp/index.js ./dist/index.js && cp -f ./tmp/index.js.map ./dist/index.js.map",
-    "pretest:unit": "yarn build && yarn build:test",
-    "test:unit": "mocha tmp/testBundle.js --require source-map-support/register",
+    "pretest:unit": "yarn build && yarn build:test && yarn build:test:esm",
+    "test:unit": "mocha tmp/testBundle.js tmp/testBundleESM.js --require source-map-support/register",
     "test:integration": "./script/integration_test",
     "test": "flow && yarn test:unit && yarn test:integration",
     "precommit": "pretty-quick --staged"
@@ -24,13 +25,12 @@
   },
   "license": "MIT",
   "dependencies": {
-    "babel-core": "~6"
+    "@babel/core": "^7"
   },
   "devDependencies": {
-    "babel-loader": "^7.1.4",
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-preset-es2015": "^6.22.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.9.0",
+    "@babel/preset-env": "^7.9.6",
+    "babel-loader": "^8.1.0",
     "flow-bin": "^0.69.0",
     "husky": "^0.14.3",
     "mocha": "^5.0.5",
@@ -41,7 +41,7 @@
     "webpack-cli": "^3.3.5"
   },
   "peerDependencies": {
-    "webpack": "^1 || ^2 || ^3 || ^4"
+    "webpack": "^2 || ^3 || ^4"
   },
   "keywords": [
     "webpack",
