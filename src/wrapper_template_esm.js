@@ -1,6 +1,6 @@
 // @flow
 
-import {template} from 'babel-core';
+import {template} from '@babel/core';
 
 export default template(
   `

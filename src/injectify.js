@@ -1,6 +1,6 @@
 // @flow
 
-import {transform, traverse, types as t, transformFromAst} from 'babel-core';
+import {transformSync, traverse, types as t, transformFromAstSync} from '@babel/core';
 import wrapperTemplate from './wrapper_template.js';
 import wrapperTemplateESM from './wrapper_template_esm.js';
 
@@ -171,7 +171,8 @@ function processExport(path) {
 }
 
 export default function injectify(context: Object, source: string, inputSourceMap: string) {
-  const {ast} = transform(source, {
+  const {ast} = transformSync(source, {
+    ast: true,
     code: false,
     compact: false,
     filename: context.resourcePath,
@@ -227,19 +228,21 @@ export default function injectify(context: Object, source: string, inputSourceMa
     t.program([
       ...imports,
       template({
-        SOURCE: ast,
+        SOURCE: ast.program.body,
         SOURCE_PATH: t.stringLiteral(context.resourcePath),
         DEPENDENCIES: t.arrayExpression(dependencies.map(d => t.stringLiteral(d))),
       }),
-    ])
+    ]),
+    []
   );
 
-  return transformFromAst(wrapperModuleAst, source, {
+  return transformFromAstSync(wrapperModuleAst, source, {
     sourceMaps: context.sourceMap,
     sourceFileName: context.resourcePath,
-    inputSourceMap,
+    inputSourceMap: inputSourceMap || undefined,
     babelrc: false,
     compact: false,
+    configFile: false,
     filename: context.resourcePath,
   });
 }
