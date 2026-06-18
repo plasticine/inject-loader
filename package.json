@@ -20,7 +20,7 @@
   "author": "Justin Morris <desk@pixelbloom.com> (http://pixelbloom.com)",
   "repository": {
     "type": "git",
-    "url": "git@github.com:plasticine/inject-loader.git"
+    "url": "git+https://github.com/plasticine/inject-loader.git"
   },
   "license": "MIT",
   "dependencies": {
